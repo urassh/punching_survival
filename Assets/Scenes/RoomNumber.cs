@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class RoomNumber : MonoBehaviour
+public class RoomNumberText : MonoBehaviour
 {
     public static int roomNum;
     public string roomNumStr;
@@ -11,21 +11,16 @@ public class RoomNumber : MonoBehaviour
     void Start()
     {
         CreateRoomNum();
-        IntToString();
+        roomNumStr = roomNum.ToString();
         DisplayRoomNum();
     }
 
     private void CreateRoomNum()
     {
-        roomNum = Random.Range(1111, 10000);
+        roomNum = Random.Range(1000, 10000);
         Debug.Log("Random : " + roomNum);
     }
 
-    private void IntToString()
-    {
-        roomNumStr = roomNum.ToString();
-        Debug.Log("roomNumStr= " + roomNumStr);
-    }
 
     private void DisplayRoomNum()
     {
