@@ -6,9 +6,9 @@ using UnityEngine.UI;
 public class RoomNumberText : MonoBehaviour
 {
     public static int roomNum;
-    public string roomNumStr;
+    public static string roomNumStr;
     private Text roomNumText;
-    void Start()
+    void Awake()
     {
         CreateRoomNum();
         roomNumStr = roomNum.ToString();
