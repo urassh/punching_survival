@@ -18,14 +18,14 @@ public class FirstPersonCamera : MonoBehaviour
 
 		transform.position = Target.position;
 
-		float mouseX = Input.GetAxis("Mouse X");
-		float mouseY = Input.GetAxis("Mouse Y");
+		// float mouseX = Input.GetAxis("Mouse X");
+		// float mouseY = Input.GetAxis("Mouse Y");
 
-		verticalRotation -= mouseY * MouseSensitivity;
-		verticalRotation = Mathf.Clamp(verticalRotation, -70f, 70f);
+		// verticalRotation -= mouseY * MouseSensitivity;
+		// verticalRotation = Mathf.Clamp(verticalRotation, -70f, 70f);
 
-		horizontalRotation += mouseX * MouseSensitivity;
+		// horizontalRotation += mouseX * MouseSensitivity;
 
-		transform.rotation = Quaternion.Euler(verticalRotation, horizontalRotation, 0);
+		// transform.rotation = Quaternion.Euler(verticalRotation, horizontalRotation, 0);
 	}
 }

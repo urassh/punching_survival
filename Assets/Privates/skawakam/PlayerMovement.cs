@@ -42,20 +42,34 @@ public class PlayerMovement : NetworkBehaviour
 		{
 			_velocity = new Vector3(0, -1, 0);
 		}
+
 		Quaternion cameraRotationY = Quaternion.Euler(0, Camera.transform.rotation.eulerAngles.y, 0);
-		Vector3 moveDir = ((transform.forward * JoyStickMovement.JoyStickPositionY) + (transform.right * JoyStickMovement.JoyStickPositionX)).normalized;
-		Vector3 move = cameraRotationY * moveDir * Runner.DeltaTime * PlayerSpeed;
+
+		// カメラ基準の前・右を作る
+		Vector3 camForward = cameraRotationY * Vector3.forward;
+		Vector3 camRight   = cameraRotationY * Vector3.right;
+
+		// 入力方向をカメラ基準で計算
+		Vector3 moveDir = (camForward * JoyStickMovement.JoyStickPositionY +
+						camRight   * JoyStickMovement.JoyStickPositionX).normalized;
+
+		// 移動処理
+		Vector3 move = moveDir * Runner.DeltaTime * PlayerSpeed;
+
 		_velocity.y += GravityValue * Runner.DeltaTime;
 		if (_jumpPressed && _controller.isGrounded)
 		{
 			_velocity.y += JumpForce;
 		}
+
 		_controller.Move(move + _velocity * Runner.DeltaTime);
 
-		if (move != Vector3.zero)
+		// 入力があるときだけ向きを変える
+		if (moveDir != Vector3.zero)
 		{
-			gameObject.transform.forward = move;
+			transform.forward = moveDir;
 		}
+
 		_jumpPressed = false;
 	}
 }
