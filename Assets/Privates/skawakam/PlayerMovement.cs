@@ -51,7 +51,7 @@ public class PlayerMovement : NetworkBehaviour
 
 		// 入力方向をカメラ基準で計算
 		Vector3 moveDir = (camForward * JoyStickMovement.JoyStickPositionY +
-						camRight   * JoyStickMovement.JoyStickPositionX).normalized;
+						camRight * JoyStickMovement.JoyStickPositionX).normalized;
 
 		// 移動処理
 		Vector3 move = moveDir * Runner.DeltaTime * PlayerSpeed;

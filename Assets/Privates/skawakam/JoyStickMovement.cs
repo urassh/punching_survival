@@ -47,7 +47,6 @@ public class JoyStickMovement : MonoBehaviour
 	{
 		PointerEventData pointer = data as PointerEventData;
 		JoyStickDisplay(true);
-		JoyStickDisplay(true);
 		Background.transform.position = pointer.position;
 	}
 
