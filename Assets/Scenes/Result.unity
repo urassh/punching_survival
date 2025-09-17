@@ -846,7 +846,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 940919756}
         m_TargetAssemblyTypeName: Navigator, Assembly-CSharp
         m_MethodName: NavigateToLobby
         m_Mode: 1
