@@ -12,7 +12,16 @@ public class PlayerMovement : NetworkBehaviour
 	public float PlayerSpeed = 2f;
 	public float JumpForce = 5f;
 	public float GravityValue = -9.81f;
-	
+	public Camera Camera;
+
+	public override void Spawned()
+	{
+		if (HasStateAuthority)
+		{
+			Camera = Camera.main;
+			Camera.GetComponent<FirstPersonCamera>().Target = transform;
+		}
+	}
 
 	private void Awake()
 	{
@@ -33,8 +42,9 @@ public class PlayerMovement : NetworkBehaviour
 		{
 			_velocity = new Vector3(0, -1, 0);
 		}
-
-		Vector3 move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")) * Runner.DeltaTime * PlayerSpeed;
+		Quaternion cameraRotationY = Quaternion.Euler(0, Camera.transform.rotation.eulerAngles.y, 0);
+		Vector3 moveDir = ((transform.forward * JoyStickMovement.JoyStickPositionY) + (transform.right * JoyStickMovement.JoyStickPositionX)).normalized;
+		Vector3 move = cameraRotationY * moveDir * Runner.DeltaTime * PlayerSpeed;
 		_velocity.y += GravityValue * Runner.DeltaTime;
 		if (_jumpPressed && _controller.isGrounded)
 		{
