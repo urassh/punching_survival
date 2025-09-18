@@ -13,15 +13,17 @@ public class ConnectRoom : MonoBehaviour, INetworkRunnerCallbacks
     public InputField roomNumberInput;
     public string roomNumber;
     public Button joinButton;
-
     public NetworkRunner runnerPrefab;
+    public NetworkRunner runner;
+
     // ロビーにあるセッション名が入ってるリスト
     private List<SessionInfo> cachedSessionList = new List<SessionInfo>();
 
     async Task Start()
     {
         // runnerを生成する
-        var runner = Instantiate(runnerPrefab);
+        runner = Instantiate(runnerPrefab);
+        DontDestroyOnLoad(runner.gameObject);
         // コールバック関数を作る（ロビー接続等が成功したときに行う関数）
         runner.AddCallbacks(this);
         // ロビーに接続する
@@ -75,7 +77,7 @@ public class ConnectRoom : MonoBehaviour, INetworkRunnerCallbacks
 
     private async void JoinSession(string roomNumber)
     {
-        var result = await runnerPrefab.StartGame(new StartGameArgs()
+        var result = await runner.StartGame(new StartGameArgs()
         {
             GameMode = GameMode.Shared,
             SessionName = roomNumber,

@@ -8,11 +8,19 @@ public class RoomNumberText : MonoBehaviour
     public static int roomNum;
     public static string roomNumStr;
     private Text roomNumText;
+
     void Awake()
     {
-        CreateRoomNum();
-        roomNumStr = roomNum.ToString();
-        DisplayRoomNum();
+        roomNumText = GetComponent<Text>();
+    }
+    public void SetRoomNumber()
+    {
+        if (CreateRoom.isHost && roomNumText != null)
+        {
+            CreateRoomNum();
+            roomNumStr = roomNum.ToString();
+            DisplayRoomNum();
+        }
     }
 
     private void CreateRoomNum()
