@@ -4,10 +4,10 @@ public class SpaceSkyboxAnimator : MonoBehaviour
 {
     [Header("Rotation")]
     [Tooltip("Skyboxの水平回転速度（度/秒）")]
-    public float rotationSpeed = 1.0f; // 正: 東→西に流れる印象
+    public float rotationSpeed = 1.2f; // 正: 東→西に流れる印象
 
     [Header("Exposure Pulse (任意)")]
-    [Range(0f, 5f)] public float baseExposure = 1.0f;
+    [Range(0f, 5f)] public float baseExposure = 0.4f;
     [Range(0f, 2f)] public float pulseAmplitude = 0.1f;
     [Range(0f, 5f)] public float pulseSpeed = 0.2f;
 
