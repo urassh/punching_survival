@@ -5,6 +5,7 @@ using UnityEngine;
 public class FirstPersonCamera : MonoBehaviour
 {
 	public Transform Target;
+	readonly Quaternion _BASE_ROTATION = Quaternion.Euler(90, 0, 0);
 
 	void LateUpdate()
 	{
@@ -12,7 +13,13 @@ public class FirstPersonCamera : MonoBehaviour
 		{
 			return;
 		}
-
 		transform.position = Target.position;
+		if (!SystemInfo.supportsGyroscope)
+		{
+			return;
+		}
+		Quaternion gyro = Input.gyro.attitude;
+		transform.localRotation = _BASE_ROTATION * new Quaternion(-gyro.x, -gyro.y, gyro.z, gyro.w);
+		
 	}
 }
