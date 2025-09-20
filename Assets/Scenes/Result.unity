@@ -287,50 +287,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 447304686}
   m_CullTransparentMesh: 1
---- !u!1 &932623359
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 932623361}
-  - component: {fileID: 932623360}
-  m_Layer: 0
-  m_Name: Ranking
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &932623360
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 932623359}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e37b42a3033e428a909cb7f8d249910, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &932623361
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 932623359}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &940919755
 GameObject:
   m_ObjectHideFlags: 0
@@ -469,6 +425,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1095076640}
   - component: {fileID: 1095076641}
+  - component: {fileID: 1095076642}
   m_Layer: 5
   m_Name: Result
   m_TagString: Untagged
@@ -508,6 +465,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   score_object: {fileID: 1786180075}
+--- !u!114 &1095076642
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1095076639}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e37b42a3033e428a909cb7f8d249910, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1283327693
 GameObject:
   m_ObjectHideFlags: 0
@@ -1060,7 +1029,6 @@ SceneRoots:
   - {fileID: 940919757}
   - {fileID: 2035159460}
   - {fileID: 1744217042}
-  - {fileID: 932623361}
   - {fileID: 1095076640}
   - {fileID: 981912774}
   - {fileID: 397897627}
