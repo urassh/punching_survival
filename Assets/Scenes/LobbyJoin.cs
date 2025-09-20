@@ -7,6 +7,7 @@ public class LobbyJoin : MonoBehaviour
     [SerializeField] private InputField roomNumberInput;
     [SerializeField] private Button joinButton;
     [SerializeField] private Text loadingText;
+    [SerializeField] private Text errorText;
     [SerializeField] private GameObject inputUI;
     public NetworkRunner runnerPrefab;
     private LobbyNetwork lobbyNetwork;
@@ -26,6 +27,9 @@ public class LobbyJoin : MonoBehaviour
         
         // 初期状態ではボタンを無効化
         SetButtonState(joinButton, false);
+        
+        // 初期状態ではエラーテキストを非表示
+        errorText.gameObject.SetActive(false);
     }
 
     public void OnInputRoomNumber()
@@ -44,6 +48,8 @@ public class LobbyJoin : MonoBehaviour
         Debug.LogError($"ルーム参加に失敗しました: {errorMessage}");
         loadingText.gameObject.SetActive(false);
         inputUI.SetActive(true);
+        errorText.text = errorMessage;
+        errorText.gameObject.SetActive(true);
     }
 
     public async void OnInputJoin()
@@ -53,6 +59,9 @@ public class LobbyJoin : MonoBehaviour
         if (roomNumberInput == null) return;
         string roomNumber = roomNumberInput.text;
         Debug.Log($"入力された文字列：{roomNumber}");
+        
+        // エラーテキストを非表示にして新しい試行を開始
+        errorText.gameObject.SetActive(false);
         loadingText.gameObject.SetActive(true);
         inputUI.SetActive(false);
 
