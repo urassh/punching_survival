@@ -10,7 +10,6 @@ public class LobbyNetwork : INetworkRunnerCallbacks
     private List<SessionInfo> cachedSessionList = new();
     private readonly NetworkRunner runner;
     public Action<NetworkRunner> OnConnectedCallback { get; set; }
-    public NetworkObject PlayerPrefab { get; set; } // プレイヤープレハブの参照 
 
     public LobbyNetwork(NetworkRunner runner)
     {

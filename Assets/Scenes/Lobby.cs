@@ -25,7 +25,6 @@ public class Lobby : MonoBehaviour
 
         lobbyNetwork = new(runner);
         lobbyNetwork.OnConnectedCallback += OnConnected;
-        lobbyNetwork.PlayerPrefab = playerPrefab;
         roomNumber = CreateRoomNum();
 
         Debug.Log($"ルーム番号 {roomNumber} でルーム作成を開始します");
