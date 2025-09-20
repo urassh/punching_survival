@@ -73,6 +73,7 @@ public class Ranking : NetworkBehaviour
     {
         if (playerData.ContainsKey(playerId))
         {
+			Debug.Log(playerId);
             var player = playerData[playerId];
             player.Rank = GetSurvivingPlayersCount(); // 脱落ランクを設定
             playerData[playerId] = player;

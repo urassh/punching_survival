@@ -37,6 +37,14 @@ public class Play : MonoBehaviour
 	private void OnLoadedPlayScene(NetworkRunner runner)
 	{
 		SpawnAllPlayers(runner);
+		//PlayerInfoをFind
+		PlayerInfo playerInfo = FindObjectOfType<PlayerInfo>();
+		//全プレイヤー情報をRankingに登録
+		Ranking ranking = FindObjectOfType<Ranking>();
+		for (int i = 0; i < playerInfo.PlayerCount; i++)
+		{
+			ranking.RPC_RegisterPlayer(playerInfo.PlayerIds[i].ToString(), playerInfo.PlayerNames[i].ToString());
+		}
 	}
 	
 	/// <summary>

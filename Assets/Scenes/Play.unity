@@ -207,7 +207,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 481697924}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 526967aa629384e90afb537e8195f074, type: 3}
+  m_Script: {fileID: 11500000, guid: 7e37b42a3033e428a909cb7f8d249910, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &481697926
@@ -226,7 +226,8 @@ MonoBehaviour:
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []
-  NetworkedBehaviours: []
+  NetworkedBehaviours:
+  - {fileID: 481697925}
   ForceRemoteRenderTimeframe: 0
 --- !u!4 &481697927
 Transform:

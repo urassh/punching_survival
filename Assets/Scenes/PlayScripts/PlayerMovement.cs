@@ -59,6 +59,9 @@ public class PlayerMovement : NetworkBehaviour
 			Camera.transform.position = new Vector3(0, 20, 0);
 			Camera.transform.LookAt(new Vector3(0, 0, 0));
 			GameObject.Find("UICanvas").SetActive(false);
+			string playerId = PlayerPrefs.GetString(PlayerId.playerIdKey);
+			Ranking ranking = FindObjectOfType<Ranking>();
+			ranking.RPC_SetDropPlayerRank(playerId);
 		}
     }
 }
