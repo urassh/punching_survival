@@ -6,8 +6,6 @@ public class LobbyJoin : MonoBehaviour
 {
     public InputField roomNumberInput;
     public NetworkRunner runnerPrefab;
-    public NetworkObject masterClientPrefab;
-    public NetworkObject clientPrefab;
     private LobbyNetwork lobbyNetwork;
 
     void Start()
@@ -16,7 +14,6 @@ public class LobbyJoin : MonoBehaviour
         NetworkRunner runner = Instantiate(runnerPrefab);
         DontDestroyOnLoad(runner.gameObject);
         lobbyNetwork = new(runner);
-        runner.AddCallbacks(lobbyNetwork);
     }
 
     public async void OnInputJoin()

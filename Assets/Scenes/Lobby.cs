@@ -21,14 +21,13 @@ public class Lobby : MonoBehaviour
             runner = Instantiate(networkRunnerPrefab);
             // ゲーム終了まで保持する(キャンセル時は削除される)
             DontDestroyOnLoad(runner.gameObject);
+            lobbyNetwork = new(runner);
+            lobbyNetwork.OnConnectedCallback += OnConnected;
+            roomNumber = Random.Range(1000, 10000);
+
+            Debug.Log($"ルーム番号 {roomNumber} でルーム作成を開始します");
+            lobbyNetwork.CreateRoom(roomNumber.ToString());
         }
-
-        lobbyNetwork = new(runner);
-        lobbyNetwork.OnConnectedCallback += OnConnected;
-        roomNumber = Random.Range(1000, 10000);
-
-        Debug.Log($"ルーム番号 {roomNumber} でルーム作成を開始します");
-        lobbyNetwork.CreateRoom(roomNumber.ToString());
     }
 
     public void OnInputStart()
