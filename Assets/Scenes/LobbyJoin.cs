@@ -21,11 +21,14 @@ public class LobbyJoin : MonoBehaviour
 
     public async void OnInputJoin()
     {
+        NetworkRunner runner = FindObjectOfType<NetworkRunner>();
+
         if (roomNumberInput == null) return;
         string roomNumber = roomNumberInput.text;
         Debug.Log($"入力された文字列：{roomNumber}");
 
         await lobbyNetwork.JoinRoom(roomNumber);
+        Scene.Lobby.LoadScene(runner);
     }
 
     public async void OnInputCancel()
