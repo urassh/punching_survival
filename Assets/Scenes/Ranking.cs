@@ -44,8 +44,6 @@ public class Ranking : NetworkBehaviour
             Destroy(gameObject);
         }
     }
-
-    
     /// <summary>
     /// プレイヤーをランキングに登録（RPC版）
     /// </summary>
@@ -57,8 +55,15 @@ public class Ranking : NetworkBehaviour
         if (!playerData.ContainsKey(playerId))
         {
             playerData[playerId] = new PlayerRankingData(playerId, playerName);
-            currentRank++;
         }
+    }
+
+    /// <summary>
+    /// 生存中（Rank = 0）のプレイヤー数を取得
+    /// </summary>
+    public int GetSurvivingPlayersCount()
+    {
+        return playerData.Values.Count(p => p.Rank == 0);
     }
 
     /// <summary>
@@ -70,24 +75,8 @@ public class Ranking : NetworkBehaviour
     {
         if (playerData.ContainsKey(playerId))
         {
-            currentRank--;
             var player = playerData[playerId];
-            player.Rank = currentRank;
-            playerData[playerId] = player;
-        }
-    }
-
-    /// <summary>
-    /// プレイヤーを生存者ランク（1位）に設定（RPC版）
-    /// </summary>
-    /// <param name="playerId">生存したプレイヤーのID</param>
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void RPC_SetSurvivedPlayerRank(string playerId)
-    {
-        if (playerData.ContainsKey(playerId))
-        {
-            var player = playerData[playerId];
-            player.Rank = 1; // 1位
+            player.Rank = GetSurvivingPlayersCount(); // 脱落ランクを設定
             playerData[playerId] = player;
         }
     }
