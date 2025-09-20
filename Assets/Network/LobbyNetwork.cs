@@ -72,12 +72,12 @@ public class LobbyNetwork : INetworkRunnerCallbacks
         return false;
     }
 
-    public void LeaveRoom()
+    public async Task LeaveRoomAsync()
     {
         Debug.Log("ルームを退出しました。");
         if (runner != null)
         {
-            runner.Shutdown();
+            await runner.Shutdown(shutdownReason: ShutdownReason.Ok);
         }
     }
 

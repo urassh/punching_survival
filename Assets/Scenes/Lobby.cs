@@ -36,9 +36,9 @@ public class Lobby : MonoBehaviour
         Scene.Play.LoadScene(runner);
     }
 
-    public void OnInputCancel()
+    public async void OnInputCancel()
     {
-        lobbyNetwork.LeaveRoom();
+        await lobbyNetwork.LeaveRoomAsync();
 
         NetworkRunner runner = FindObjectOfType<NetworkRunner>();
         if (runner != null)
@@ -46,6 +46,7 @@ public class Lobby : MonoBehaviour
 
         Scene.Start.LoadScene();
     }
+
 
     private int CreateRoomNum()
     {
