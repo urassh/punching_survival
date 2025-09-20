@@ -59,8 +59,6 @@ public class Lobby : MonoBehaviour
 
     public void OnConnected(NetworkRunner runner)
     {
-        Debug.Log("OnConnected");
-
         if (connectedUI != null && connectingUI != null)
         {
             connectedUI.SetActive(true);
