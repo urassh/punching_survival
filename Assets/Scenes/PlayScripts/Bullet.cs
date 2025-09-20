@@ -4,42 +4,71 @@ using UnityEngine;
 using Fusion;
 using Fusion.Addons.Physics;
 
+[RequireComponent(typeof(Rigidbody))]
 public class Bullet : NetworkBehaviour
 {
-	public float BulletSpeed = 30f;
-	public float LifeTime = 5f;
-	public float KnocbackForce = 10f;
+    public float BulletSpeed = 10f;
+    public float LifeTime = 5f;
+    public float KnockbackForce = 100f;
 
-	private float _lifeTimer;
-	private Rigidbody _rigidbody;
+    private float _lifeTimer;
+    private Rigidbody _rigidbody;
 
-	public override void Spawned()
-	{
-		_rigidbody = GetComponent<Rigidbody>();
-		_rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
-		_lifeTimer = LifeTime;
-		_rigidbody.useGravity = false;
-		_rigidbody.AddForce(transform.forward * BulletSpeed, ForceMode.VelocityChange);
-	}
+    /// <summary>
+    /// オブジェクトがネットワーク上に生成された時に一度だけ呼ばれる
+    /// </summary>
+    public override void Spawned()
+    {
+        // 必要なコンポーネントを取得
+        _rigidbody = GetComponent<Rigidbody>();
 
-	// Update is called once per frame
-	public override void FixedUpdateNetwork()
-	{
+        // 初期設定
+        _rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        _lifeTimer = LifeTime;
+        _rigidbody.useGravity = false;
+
+        // ▼▼▼ ここで初速を与える ▼▼▼
+        // この弾は、自身の前方に、設定された速度で飛んでいく
+        _rigidbody.AddForce(transform.forward * BulletSpeed, ForceMode.VelocityChange);
+    }
+
+    /// <summary>
+    /// 物理演算のタイミングで定期的に呼ばれる
+    /// </summary>
+    public override void FixedUpdateNetwork()
+    {
+		Debug.Log($"FixedUpdateNetwork is running on object {Object.Id}. Timer: {_lifeTimer}");
+        // 時間経過で消滅する処理
 		_lifeTimer -= Runner.DeltaTime;
-		if (_lifeTimer <= 0)
-		{
-			Runner.Despawn(Object);
-		}
-	}
+        if (_lifeTimer <= 0)
+        {
+			Debug.Log("Bullet will Despawn");
+            // オブジェクトが有効な場合のみDespawnを呼ぶ
+			if (Object != null && Object.IsValid)
+			{
+				Runner.Despawn(Object);
+			}
+        }
+    }
 
-	private void OnCollisionEnter(Collision collision)
-	{
+    /// <summary>
+    /// 何かに衝突した時に呼ばれる
+    /// </summary>
+    private void OnCollisionEnter(Collision collision)
+    {
+		Debug.Log("OnCollisionEnter");
+        // 衝突相手に力を加える処理
 		var targetRigidbody = collision.gameObject.GetComponent<Rigidbody>();
-		if (targetRigidbody != null && targetRigidbody != _rigidbody)
-		{
-			Vector3 dir = (collision.transform.position - transform.position).normalized;
-			targetRigidbody.AddForce(dir * KnocbackForce, ForceMode.Impulse);
-		}
-		Runner.Despawn(Object);
-	}
+        if (targetRigidbody != null && targetRigidbody != _rigidbody)
+        {
+            Vector3 dir = (collision.transform.position - transform.position).normalized;
+            targetRigidbody.AddForce(dir * KnockbackForce, ForceMode.Impulse);
+        }
+
+        // 衝突したら自身は消滅する
+        if (Object != null && Object.IsValid)
+        {
+            Runner.Despawn(Object);
+        }
+    }
 }
