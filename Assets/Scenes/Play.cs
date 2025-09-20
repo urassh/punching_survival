@@ -63,7 +63,9 @@ public class Play : MonoBehaviour
 			{
 				// スポーンポイントのインデックスを計算（最大4つまで対応）
 				Vector3 spawnPosition = spawnIndex < spawnPoints.Length ? spawnPoints[spawnIndex].position : Vector3.zero;
-				runner.Spawn(playerPrefab, spawnPosition, Quaternion.identity, player);
+				// 0,0,0の方向を向くように設定
+				Quaternion spawnRotation = Quaternion.LookRotation(Vector3.forward);
+				runner.Spawn(playerPrefab, spawnPosition, spawnRotation, player);
 			}
 			spawnIndex++;
 		}
