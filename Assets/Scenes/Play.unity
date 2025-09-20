@@ -152,6 +152,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a61cd5239f9a04b8bb9becaf19c3518c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnPoints:
+  - {fileID: 225260985}
+  - {fileID: 505271021}
+  - {fileID: 2087046811}
+  - {fileID: 1524872123}
   playerPrefab: {fileID: 6925090075186637679, guid: 691234c554d0c4894b242cf6b460ac36, type: 3}
 --- !u!4 &118603071
 Transform:
@@ -255,7 +260,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SortKey: 2326891561
   ObjectInterest: 1
-  Flags: 262145
+  Flags: 786433
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 481697925}
