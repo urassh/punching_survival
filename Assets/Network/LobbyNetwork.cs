@@ -11,6 +11,7 @@ public class LobbyNetwork : INetworkRunnerCallbacks
     private List<SessionInfo> cachedSessionList = new();
     private readonly NetworkRunner runner;
     public Action<NetworkRunner> OnConnectedCallback { get; set; }
+    public Action<NetworkRunner> OnLoadedSceneCallback { get; set; }
     public Action OnPlayerLeaveCallback { get; set; }
     private TaskCompletionSource<bool> sessionListUpdatedTask;
 
@@ -189,7 +190,7 @@ public class LobbyNetwork : INetworkRunnerCallbacks
     public void OnSceneLoadDone(NetworkRunner runner)
     {
         if (SceneManager.GetActiveScene().name == "Lobby")
-            OnConnectedCallback?.Invoke(runner);
+            OnLoadedSceneCallback?.Invoke(runner);
     }
 
     public void OnSceneLoadStart(NetworkRunner runner) {}

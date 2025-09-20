@@ -1,13 +1,16 @@
 using UnityEngine;
 using Fusion;
+using System.Collections;
 
 public class Lobby : MonoBehaviour
 {
+    private static WaitForSeconds _waitForSeconds0_1 = new WaitForSeconds(0.1f);
     public NetworkRunner networkRunnerPrefab;
     public RoomNumberText roomNumberText;
     public GameObject connectedUI;
     public GameObject connectingUI;
     public NetworkObject playerInfoPrefab;
+    public PlayerTexts playerTexts;
     private LobbyNetwork lobbyNetwork;
     private int roomNumber;
 
@@ -23,7 +26,7 @@ public class Lobby : MonoBehaviour
             // ゲーム終了まで保持する(キャンセル時は削除される)
             DontDestroyOnLoad(runner.gameObject);
             lobbyNetwork = new(runner);
-            lobbyNetwork.OnConnectedCallback += OnConnected;
+            lobbyNetwork.OnConnectedCallback += OnConnectedHost;
             lobbyNetwork.OnPlayerLeaveCallback += RemovePlayerFromLobby;
             roomNumber = Random.Range(1000, 10000);
 
@@ -35,7 +38,7 @@ public class Lobby : MonoBehaviour
             Debug.Log("Room Name: " + runner.SessionInfo.Name);
             roomNumber = int.Parse(runner.SessionInfo.Name);
             lobbyNetwork = new(runner);
-            lobbyNetwork.OnConnectedCallback += OnConnected;
+            lobbyNetwork.OnLoadedSceneCallback += OnConnectedClient;
             lobbyNetwork.OnPlayerLeaveCallback += RemovePlayerFromLobby;
             Debug.Log($"ルーム番号 {roomNumber} のルームに参加します");
         }
@@ -59,37 +62,35 @@ public class Lobby : MonoBehaviour
         Scene.Start.LoadScene();
     }
 
-    public void OnConnected(NetworkRunner runner)
+    /// ホストが接続されたときに呼ばれるコールバック
+    private void OnConnectedHost(NetworkRunner runner)
     {
         if (connectedUI != null && connectingUI != null)
         {
             connectedUI.SetActive(true);
             connectingUI.SetActive(false);
             roomNumberText.SetRoomNumber(roomNumber);
+            playerTexts.ActivatePlayerTexts();
         }
 
-        // 最初のクライアント（ホスト）がPlayerInfoオブジェクトを作成
-        CreatePlayerInfoIfNeeded(runner);
+        runner.Spawn(playerInfoPrefab, Vector3.zero, Quaternion.identity);
+        PlayerInfo playerInfo = FindObjectOfType<PlayerInfo>();
+        playerInfo.AddCurrentPlayer();
     }
 
-    private void CreatePlayerInfoIfNeeded(NetworkRunner runner)
+    /// ホスト以外のクライアントが接続されたときにPlayerInfoオブジェクトを作成
+    private void OnConnectedClient(NetworkRunner runner)
     {
-        // 既にPlayerInfoが存在するかチェック
-        PlayerInfo existingPlayerInfo = FindObjectOfType<PlayerInfo>();
-        if (existingPlayerInfo != null)
+        if (connectedUI != null && connectingUI != null)
         {
-            Debug.Log("PlayerInfoは既に存在します");
-            // PlayerInfoのSpawned()メソッドで自動的にプレイヤー情報が追加されるため、
-            // ここでRPC_AddPlayerを呼ぶ必要はありません
-            return;
+            connectedUI.SetActive(true);
+            connectingUI.SetActive(false);
+            roomNumberText.SetRoomNumber(roomNumber);
+            playerTexts.ActivatePlayerTexts();
         }
 
-        // ホスト（SharedModeMasterClient）のみがPlayerInfoオブジェクトを作成
-        if (runner.IsSharedModeMasterClient && playerInfoPrefab != null)
-        {
-            Debug.Log("ホストがPlayerInfoオブジェクトを作成します");
-            runner.Spawn(playerInfoPrefab, Vector3.zero, Quaternion.identity);
-        }
+        // PlayerInfoオブジェクトが存在するまで待機
+        StartCoroutine(WaitForPlayerInfoAndAddPlayer());
     }
 
     /// <summary>
@@ -117,5 +118,33 @@ public class Lobby : MonoBehaviour
         {
             Debug.LogWarning("PlayerInfoオブジェクトが見つかりません");
         }
+    }
+
+    /// <summary>
+    /// PlayerInfoオブジェクトが利用可能になるまで待機してからプレイヤーを追加
+    /// </summary>
+    private IEnumerator WaitForPlayerInfoAndAddPlayer()
+    {
+        PlayerInfo playerInfo = null;
+        int maxAttempts = 50; // 最大5秒待機（0.1秒間隔で50回）
+        int attempts = 0;
+
+        while (attempts < maxAttempts)
+        {
+            playerInfo = FindObjectOfType<PlayerInfo>();
+            if (playerInfo != null)
+            {
+                // PlayerInfoが見つかったらすぐにループを終了
+                Debug.Log("PlayerInfoオブジェクトが見つかりました。プレイヤーを追加します。");
+                playerInfo.AddCurrentPlayer();
+                yield break; // コルーチンを終了
+            }
+
+            yield return _waitForSeconds0_1;
+            attempts++;
+        }
+
+        // ここに到達するのはタイムアウトした場合のみ
+        Debug.LogError("PlayerInfoオブジェクトが見つかりませんでした。タイムアウトしました。");
     }
 }
