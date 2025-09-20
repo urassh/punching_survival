@@ -29,13 +29,19 @@ public struct PlayerRankingData : INetworkStruct
 /// </summary>
 public class Ranking : NetworkBehaviour
 {
-    private Dictionary<string, PlayerRankingData> playerData = new Dictionary<string, PlayerRankingData>();
+    private Dictionary<string, PlayerRankingData> playerData = new Dictionary<string, PlayerRankingData>();    public static Ranking Instance { get; private set; }
     private void Awake()
     {
-        DontDestroyOnLoad(this.gameObject);
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
-
-
     /// <summary>
     /// プレイヤーをランキングに登録（RPC版）
     /// </summary>
@@ -68,22 +74,7 @@ public class Ranking : NetworkBehaviour
         if (playerData.ContainsKey(playerId))
         {
             var player = playerData[playerId];
-            player.Rank = GetSurvivingPlayersCount() + 1; // 脱落ランクを設定
-            playerData[playerId] = player;
-        }
-    }
-
-    /// <summary>
-    /// プレイヤーを生存者ランク（1位）に設定（RPC版）
-    /// </summary>
-    /// <param name="playerId">生存したプレイヤーのID</param>
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void RPC_SetSurvivedPlayerRank(string playerId)
-    {
-        if (playerData.ContainsKey(playerId))
-        {
-            var player = playerData[playerId];
-            player.Rank = 1; // 1位
+            player.Rank = GetSurvivingPlayersCount(); // 脱落ランクを設定
             playerData[playerId] = player;
         }
     }
