@@ -29,15 +29,23 @@ public struct PlayerRankingData : INetworkStruct
 /// </summary>
 public class Ranking : NetworkBehaviour
 {
-    private Dictionary<string, PlayerRankingData> playerData = new Dictionary<string, PlayerRankingData>();
-    private List<PlayerRankingData> rankingList = new List<PlayerRankingData>();
+    private Dictionary<string, PlayerRankingData> playerData = new Dictionary<string, PlayerRankingData>();    public static Ranking Instance { get; private set; }
+
     private int currentRank = 0;
     private void Awake()
     {
-        DontDestroyOnLoad(this.gameObject);
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
-
+    
     /// <summary>
     /// プレイヤーをランキングに登録（RPC版）
     /// </summary>
@@ -76,15 +84,11 @@ public class Ranking : NetworkBehaviour
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RPC_SetSurvivedPlayerRank(string playerId)
     {
-        for (int i = 0; i < rankingList.Count; i++)
+        if (playerData.ContainsKey(playerId))
         {
-            if (rankingList[i].PlayerId.ToString() == playerId)
-            {
-                var player = rankingList[i];
-                player.Rank = 1; // 1位
-                rankingList[i] = player;
-                break;
-            }
+            var player = playerData[playerId];
+            player.Rank = 1; // 1位
+            playerData[playerId] = player;
         }
     }
 
@@ -114,12 +118,4 @@ public class Ranking : NetworkBehaviour
     //     return rankingList.OrderBy(p => p.Rank).ToList();
     // }
 
-    /// <summary>
-    /// ランキングをリセット
-    /// </summary>
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void RPC_ResetRanking()
-    {
-        rankingList.Clear();
-    }
 }
