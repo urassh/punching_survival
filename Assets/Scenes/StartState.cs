@@ -23,11 +23,23 @@ public class StartState : MonoBehaviour
         SetButtonState(joinButton, isValidName);
         SetButtonState(createButton, isValidName);
     }
+    
+    public void OnClickedJoin()
+    {
+        PlayerPrefs.SetString("PlayerName", playerNameInputField.text);
+        Scene.LobbyJoin.LoadScene();
+    }
+
+    public void OnClickedCreate()
+    {
+        PlayerPrefs.SetString("PlayerName", playerNameInputField.text);
+        Scene.Lobby.LoadScene();
+    }
 
     private void SetButtonState(Button button, bool isEnabled)
     {
         button.enabled = isEnabled;
-        
+
         ColorBlock colorBlock = button.colors;
         colorBlock.normalColor = isEnabled ? enabledColor : disabledColor;
         colorBlock.highlightedColor = isEnabled ? enabledColor : disabledColor;

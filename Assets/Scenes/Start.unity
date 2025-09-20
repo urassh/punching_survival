@@ -805,50 +805,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &834791322
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 834791324}
-  - component: {fileID: 834791323}
-  m_Layer: 0
-  m_Name: Navigator
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &834791323
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 834791322}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77d80411474564c938010ffef8a7ce16, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &834791324
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 834791322}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 960, y: 496, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &906151904
 GameObject:
   m_ObjectHideFlags: 0
@@ -1023,18 +979,18 @@ PrefabInstance:
     - target: {fileID: 4846270436468426521, guid: b636a898c01274c9fb9693493000b866, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 834791323}
+      objectReference: {fileID: 1247746879}
     - target: {fileID: 4846270436468426521, guid: b636a898c01274c9fb9693493000b866, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4846270436468426521, guid: b636a898c01274c9fb9693493000b866, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: NavigateToLobbyJoin
+      value: OnClickedJoin
       objectReference: {fileID: 0}
     - target: {fileID: 4846270436468426521, guid: b636a898c01274c9fb9693493000b866, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Navigator, Assembly-CSharp
+      value: StartState, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 4846270436468426521, guid: b636a898c01274c9fb9693493000b866, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -1332,6 +1288,8 @@ MonoBehaviour:
   playerNameInputField: {fileID: 1586657014}
   joinButton: {fileID: 1173123392}
   createButton: {fileID: 1509347967}
+  enabledColor: {r: 1, g: 1, b: 1, a: 1}
+  disabledColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
 --- !u!4 &1247746880
 Transform:
   m_ObjectHideFlags: 0
@@ -1410,18 +1368,18 @@ PrefabInstance:
     - target: {fileID: 4846270436468426521, guid: b636a898c01274c9fb9693493000b866, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 834791323}
+      objectReference: {fileID: 1247746879}
     - target: {fileID: 4846270436468426521, guid: b636a898c01274c9fb9693493000b866, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4846270436468426521, guid: b636a898c01274c9fb9693493000b866, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: NavigateToLobby
+      value: OnClickedCreate
       objectReference: {fileID: 0}
     - target: {fileID: 4846270436468426521, guid: b636a898c01274c9fb9693493000b866, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Navigator, Assembly-CSharp
+      value: StartState, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 4846270436468426521, guid: b636a898c01274c9fb9693493000b866, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -1948,7 +1906,6 @@ SceneRoots:
   - {fileID: 717680149}
   - {fileID: 232807590}
   - {fileID: 668052614}
-  - {fileID: 834791324}
   - {fileID: 906151907}
   - {fileID: 810463470}
   - {fileID: 2114839214}
