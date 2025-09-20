@@ -7,6 +7,7 @@ public class Lobby : MonoBehaviour
     public RoomNumberText roomNumberText;
     public GameObject connectedUI;
     public GameObject connectingUI;
+    public NetworkObject playerPrefab;
     private LobbyNetwork lobbyNetwork;
     private int roomNumber;
 
@@ -20,14 +21,13 @@ public class Lobby : MonoBehaviour
             runner = Instantiate(networkRunnerPrefab);
             // ゲーム終了まで保持する(キャンセル時は削除される)
             DontDestroyOnLoad(runner.gameObject);
+            lobbyNetwork = new(runner);
+            lobbyNetwork.OnConnectedCallback += OnConnected;
+            roomNumber = Random.Range(1000, 10000);
+
+            Debug.Log($"ルーム番号 {roomNumber} でルーム作成を開始します");
+            lobbyNetwork.CreateRoom(roomNumber.ToString());
         }
-
-        lobbyNetwork = new(runner);
-        lobbyNetwork.OnConnectedCallback += OnConnected;
-        roomNumber = CreateRoomNum();
-
-        Debug.Log($"ルーム番号 {roomNumber} でルーム作成を開始します");
-        lobbyNetwork.CreateRoom(roomNumber.ToString());
     }
 
     public void OnInputStart()
@@ -59,10 +59,5 @@ public class Lobby : MonoBehaviour
             connectingUI.SetActive(false);
             roomNumberText.SetRoomNumber(roomNumber);
         }
-    }
-
-    private int CreateRoomNum()
-    {
-        return Random.Range(1000, 10000);
     }
 }

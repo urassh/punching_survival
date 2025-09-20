@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/Network/PlayNetwork.cs.meta
-guid: ecc737cde160345a4aa439a36a10583e
-========
-guid: ff48f93436eb74e97bd979f5ac0c164b
->>>>>>>> develop:Assets/Privates/skawakam/Bullet.cs.meta
+guid: a61cd5239f9a04b8bb9becaf19c3518c
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2

@@ -9,7 +9,8 @@ public class LobbyNetwork : INetworkRunnerCallbacks
 {
     private List<SessionInfo> cachedSessionList = new();
     private readonly NetworkRunner runner;
-    public Action<NetworkRunner> OnConnectedCallback { get; set; } 
+    public Action<NetworkRunner> OnConnectedCallback { get; set; }
+    private TaskCompletionSource<bool> sessionListUpdatedTask;
 
     public LobbyNetwork(NetworkRunner runner)
     {
@@ -45,18 +46,32 @@ public class LobbyNetwork : INetworkRunnerCallbacks
         else
         {
             Debug.LogError($"ルーム作成に失敗しました: {result.ErrorMessage}");
+            throw new Exception($"ルーム作成に失敗しました: {result.ErrorMessage}");
         }
     }
 
     public async Task JoinRoom(string roomNumber)
     {
-        if (runner == null || !IsExistRoom(roomNumber)) return;
+        Debug.Log("ルーム参加を開始します...");
+        
+        if (runner == null) return;
 
-        // 既に接続されている場合は一度シャットダウン
-        if (runner.IsRunning)
+        await runner.JoinSessionLobby(SessionLobby.Shared);
+
+        // セッションリストの更新を待つ
+        if (sessionListUpdatedTask == null || sessionListUpdatedTask.Task.IsCompleted)
         {
-            Debug.Log("既存の接続をシャットダウンしています...");
-            await runner.Shutdown();
+            sessionListUpdatedTask = new TaskCompletionSource<bool>();
+            Debug.Log("セッションリストの更新を待機中...");
+            await sessionListUpdatedTask.Task;
+        }
+
+        Debug.Log("IsExistRoom: " + IsExistRoom(roomNumber));
+        
+        if (!IsExistRoom(roomNumber)) 
+        {
+            Debug.LogError($"ルーム '{roomNumber}' が見つかりません");
+            return;
         }
 
         var result = await runner.StartGame(new StartGameArgs
@@ -79,14 +94,16 @@ public class LobbyNetwork : INetworkRunnerCallbacks
         Debug.Log(result);
         Debug.Log($"参加したルームの名前:{runner.SessionInfo.Name}");
     }
-
     private bool IsExistRoom(string roomNumber)
     {
-        if (runner == null || !runner.IsRunning) return false;
-
         foreach (SessionInfo session in cachedSessionList)
+        {
             if (session.Name == roomNumber)
                 return true;
+            Debug.Log($"セッション名: {session.Name}");
+        }
+        Debug.Log($"cachedSessionList.count: {cachedSessionList.Count}");
+
         return false;
     }
 
@@ -144,7 +161,7 @@ public class LobbyNetwork : INetworkRunnerCallbacks
     {
         Debug.Log("サーバーに接続されました");
         Debug.Log($"IsSharedModeMasterClient: {runner.IsSharedModeMasterClient}");
-        
+
         // コールバック関数が設定されている場合は実行
         OnConnectedCallback?.Invoke(runner);
     }
@@ -152,6 +169,10 @@ public class LobbyNetwork : INetworkRunnerCallbacks
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
     {
         cachedSessionList = sessionList;
+        Debug.Log($"セッションリストが更新されました。現在のルーム数: {cachedSessionList.Count}");
+        
+        // セッションリストの更新完了を通知
+        sessionListUpdatedTask?.SetResult(true);
     }
 
     public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) {}
@@ -159,7 +180,6 @@ public class LobbyNetwork : INetworkRunnerCallbacks
     public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) {}
 
     public void OnSceneLoadDone(NetworkRunner runner) {}
-    
 
     public void OnSceneLoadStart(NetworkRunner runner) {}
 }
