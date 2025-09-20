@@ -24,12 +24,6 @@ public class JoyStickMovement : MonoBehaviour
 		Initialization();
 	}
 
-	// Update is called once per frame
-	void Update()
-	{
-
-	}
-
 	private void Initialization()
 	{
 		stickMovement = StickRange * (Screen.width + Screen.height) / 100;
