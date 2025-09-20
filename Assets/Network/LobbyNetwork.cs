@@ -11,6 +11,7 @@ public class LobbyNetwork : INetworkRunnerCallbacks
     private List<SessionInfo> cachedSessionList = new();
     private readonly NetworkRunner runner;
     public Action<NetworkRunner> OnConnectedCallback { get; set; }
+    public Action OnPlayerLeaveCallback { get; set; }
     private TaskCompletionSource<bool> sessionListUpdatedTask;
 
     public LobbyNetwork(NetworkRunner runner)
@@ -111,6 +112,10 @@ public class LobbyNetwork : INetworkRunnerCallbacks
     public async Task LeaveRoomAsync()
     {
         Debug.Log("ルームを退出しました。");
+        
+        // プレイヤー退出のコールバックを実行
+        OnPlayerLeaveCallback?.Invoke();
+        
         if (runner != null)
         {
             await runner.Shutdown(shutdownReason: ShutdownReason.Ok);

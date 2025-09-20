@@ -1449,7 +1449,7 @@ MonoBehaviour:
   roomNumberText: {fileID: 51617809}
   connectedUI: {fileID: 2065304308}
   connectingUI: {fileID: 1203474234}
-  playerPrefab: {fileID: 0}
+  playerInfoPrefab: {fileID: -3371156547539776042, guid: fc14b1299a77b46b2a93a90d1283404d, type: 3}
 --- !u!4 &1661993743
 Transform:
   m_ObjectHideFlags: 0

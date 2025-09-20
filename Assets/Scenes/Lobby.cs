@@ -7,7 +7,7 @@ public class Lobby : MonoBehaviour
     public RoomNumberText roomNumberText;
     public GameObject connectedUI;
     public GameObject connectingUI;
-    public NetworkObject playerPrefab;
+    public NetworkObject playerInfoPrefab;
     private LobbyNetwork lobbyNetwork;
     private int roomNumber;
 
@@ -24,6 +24,7 @@ public class Lobby : MonoBehaviour
             DontDestroyOnLoad(runner.gameObject);
             lobbyNetwork = new(runner);
             lobbyNetwork.OnConnectedCallback += OnConnected;
+            lobbyNetwork.OnPlayerLeaveCallback += RemovePlayerFromLobby;
             roomNumber = Random.Range(1000, 10000);
 
             Debug.Log($"ルーム番号 {roomNumber} でルーム作成を開始します");
@@ -35,6 +36,7 @@ public class Lobby : MonoBehaviour
             roomNumber = int.Parse(runner.SessionInfo.Name);
             lobbyNetwork = new(runner);
             lobbyNetwork.OnConnectedCallback += OnConnected;
+            lobbyNetwork.OnPlayerLeaveCallback += RemovePlayerFromLobby;
             Debug.Log($"ルーム番号 {roomNumber} のルームに参加します");
         }
     }
@@ -64,6 +66,56 @@ public class Lobby : MonoBehaviour
             connectedUI.SetActive(true);
             connectingUI.SetActive(false);
             roomNumberText.SetRoomNumber(roomNumber);
+        }
+
+        // 最初のクライアント（ホスト）がPlayerInfoオブジェクトを作成
+        CreatePlayerInfoIfNeeded(runner);
+    }
+
+    private void CreatePlayerInfoIfNeeded(NetworkRunner runner)
+    {
+        // 既にPlayerInfoが存在するかチェック
+        PlayerInfo existingPlayerInfo = FindObjectOfType<PlayerInfo>();
+        if (existingPlayerInfo != null)
+        {
+            Debug.Log("PlayerInfoは既に存在します");
+            // PlayerInfoのSpawned()メソッドで自動的にプレイヤー情報が追加されるため、
+            // ここでRPC_AddPlayerを呼ぶ必要はありません
+            return;
+        }
+
+        // ホスト（SharedModeMasterClient）のみがPlayerInfoオブジェクトを作成
+        if (runner.IsSharedModeMasterClient && playerInfoPrefab != null)
+        {
+            Debug.Log("ホストがPlayerInfoオブジェクトを作成します");
+            runner.Spawn(playerInfoPrefab, Vector3.zero, Quaternion.identity);
+        }
+    }
+
+    /// <summary>
+    /// PlayerInfoからそのクライアントのプレイヤーを削除する
+    /// </summary>
+    private void RemovePlayerFromLobby()
+    {
+        Debug.Log("プレイヤーをロビーから削除中...");
+        
+        PlayerInfo playerInfo = FindObjectOfType<PlayerInfo>();
+        if (playerInfo != null)
+        {
+            string playerId = PlayerPrefs.GetString("playerId", "");
+            if (!string.IsNullOrEmpty(playerId))
+            {
+                Debug.Log($"プレイヤーID {playerId} を削除します");
+                playerInfo.RPC_RemovePlayer(playerId);
+            }
+            else
+            {
+                Debug.LogWarning("PlayerIdが見つかりません");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("PlayerInfoオブジェクトが見つかりません");
         }
     }
 }
