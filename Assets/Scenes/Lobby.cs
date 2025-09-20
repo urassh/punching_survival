@@ -5,9 +5,10 @@ public class Lobby : MonoBehaviour
 {
     public NetworkRunner networkRunnerPrefab;
     public RoomNumberText roomNumberText;
-    public NetworkObject masterClientPrefab;
-    public NetworkObject clientPrefab;
+    public GameObject connectedUI;
+    public GameObject connectingUI;
     private LobbyNetwork lobbyNetwork;
+    private int roomNumber;
 
     private void Awake()
     {
@@ -22,11 +23,9 @@ public class Lobby : MonoBehaviour
         }
 
         lobbyNetwork = new(runner);
-        int roomNumber = CreateRoomNum();
+        lobbyNetwork.OnConnectedCallback += OnConnected;
+        roomNumber = CreateRoomNum();
 
-        if (roomNumberText != null)
-            roomNumberText.SetRoomNumber(roomNumber);
-        
         Debug.Log($"ルーム番号 {roomNumber} でルーム作成を開始します");
         lobbyNetwork.CreateRoom(roomNumber.ToString());
     }
@@ -37,12 +36,6 @@ public class Lobby : MonoBehaviour
 
         Debug.Log("LOAD START");
         Debug.Log("runner.IsSharedModeMasterClient: " + runner.IsSharedModeMasterClient);
-        
-        // SharedModeのマスタークライアントのみmasterClientPrefabを生成
-        if (runner.IsSharedModeMasterClient && masterClientPrefab != null)
-        {
-            runner.Spawn(masterClientPrefab);
-        }
         
         Scene.Play.LoadScene(runner);
     }
@@ -58,6 +51,15 @@ public class Lobby : MonoBehaviour
         Scene.Start.LoadScene();
     }
 
+    public void OnConnected(NetworkRunner runner)
+    {
+        if (connectedUI != null && connectingUI != null)
+        {
+            connectedUI.SetActive(true);
+            connectingUI.SetActive(false);
+            roomNumberText.SetRoomNumber(roomNumber);
+        }
+    }
 
     private int CreateRoomNum()
     {

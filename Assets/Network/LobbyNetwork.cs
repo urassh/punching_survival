@@ -8,7 +8,8 @@ using UnityEngine;
 public class LobbyNetwork : INetworkRunnerCallbacks
 {
     private List<SessionInfo> cachedSessionList = new();
-    private NetworkRunner runner;
+    private readonly NetworkRunner runner;
+    public Action<NetworkRunner> OnConnectedCallback { get; set; } 
 
     public LobbyNetwork(NetworkRunner runner)
     {
@@ -139,7 +140,14 @@ public class LobbyNetwork : INetworkRunnerCallbacks
     
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) {}
 
-    public void OnConnectedToServer(NetworkRunner runner) {}
+    public void OnConnectedToServer(NetworkRunner runner)
+    {
+        Debug.Log("サーバーに接続されました");
+        Debug.Log($"IsSharedModeMasterClient: {runner.IsSharedModeMasterClient}");
+        
+        // コールバック関数が設定されている場合は実行
+        OnConnectedCallback?.Invoke(runner);
+    }
 
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
     {
