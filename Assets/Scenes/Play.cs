@@ -3,6 +3,7 @@ using Fusion;
 
 public class Play : MonoBehaviour
 {
+    [SerializeField] private Transform[] spawnPoints;
 	public NetworkObject playerPrefab; // プレイヤープレハブの参照
 	private PlayNetwork playNetwork;
 
@@ -53,14 +54,18 @@ public class Play : MonoBehaviour
 	}
 	
     private void SpawnAllPlayers(NetworkRunner runner)
-    {
-        foreach (PlayerRef player in runner.ActivePlayers)
-        {
-            // 自分自身のキャラクターだけを生成する
-            if (player == runner.LocalPlayer)
-            {
-                runner.Spawn(playerPrefab, Vector3.zero, Quaternion.identity, player);
-            }
-        }
-    }
+	{
+		int spawnIndex = 0;
+		foreach (PlayerRef player in runner.ActivePlayers)
+		{
+			// 自分自身のキャラクターだけを生成する
+			if (player == runner.LocalPlayer)
+			{
+				// スポーンポイントのインデックスを計算（最大4つまで対応）
+				Vector3 spawnPosition = spawnIndex < spawnPoints.Length ? spawnPoints[spawnIndex].position : Vector3.zero;
+				runner.Spawn(playerPrefab, spawnPosition, Quaternion.identity, player);
+			}
+			spawnIndex++;
+		}
+	}
 }
