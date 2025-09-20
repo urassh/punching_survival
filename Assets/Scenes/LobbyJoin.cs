@@ -6,6 +6,8 @@ public class LobbyJoin : MonoBehaviour
 {
     public InputField roomNumberInput;
     public NetworkRunner runnerPrefab;
+    public NetworkObject masterClientPrefab;
+    public NetworkObject clientPrefab;
     private LobbyNetwork lobbyNetwork;
 
     void Start()

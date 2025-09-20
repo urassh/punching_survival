@@ -14,52 +14,67 @@ public class LobbyNetwork : INetworkRunnerCallbacks
     {
         this.runner = runner;
         runner.AddCallbacks(this);
-        
-        // セッションロビーへの接続を試行
-        try
-        {
-            runner.JoinSessionLobby(SessionLobby.Shared);
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"セッションロビーへの接続に失敗しました: {e.Message}");
-        }
     }
 
     public async void CreateRoom(string roomNumber)
     {
-        if (runner == null || !runner.IsRunning) return;
+        if (runner == null) return;
+
+        // 既に接続されている場合は一度シャットダウン
+        if (runner.IsRunning)
+        {
+            Debug.Log("既存の接続をシャットダウンしています...");
+            await runner.Shutdown();
+        }
 
         var result = await runner.StartGame(new StartGameArgs
         {
             SessionName = roomNumber,
-            GameMode = GameMode.Host,
+            GameMode = GameMode.Shared,
             Scene = Scene.Lobby.GetSceneRef(),
             SceneManager = runner.gameObject.GetComponent<NetworkSceneManagerDefault>()
         });
 
         Debug.Log(result);
-        Debug.Log($"生成したルームの名前:{runner.SessionInfo.Name}");
+        if (result.Ok)
+        {
+            Debug.Log($"生成したルームの名前:{runner.SessionInfo.Name}");
+            Debug.Log($"IsSharedModeMasterClient: {runner.IsSharedModeMasterClient}");
+        }
+        else
+        {
+            Debug.LogError($"ルーム作成に失敗しました: {result.ErrorMessage}");
+        }
     }
 
-    public async 
-    Task
-JoinRoom(string roomNumber)
+    public async Task JoinRoom(string roomNumber)
     {
-        if (runner == null || !runner.IsRunning || !IsExistRoom(roomNumber)) return;
+        if (runner == null || !IsExistRoom(roomNumber)) return;
+
+        // 既に接続されている場合は一度シャットダウン
+        if (runner.IsRunning)
+        {
+            Debug.Log("既存の接続をシャットダウンしています...");
+            await runner.Shutdown();
+        }
 
         var result = await runner.StartGame(new StartGameArgs
         {
             SessionName = roomNumber,
-            GameMode = GameMode.Client,
+            GameMode = GameMode.Shared,
             Scene = Scene.Lobby.GetSceneRef(),
             SceneManager = runner.gameObject.GetComponent<NetworkSceneManagerDefault>()
         });
 
         if (result.Ok)
+        {
             Debug.Log($"ルームに参加しました");
+            Debug.Log($"IsSharedModeMasterClient: {runner.IsSharedModeMasterClient}");
+        }
         else
-            Debug.Log($"ルームに参加できませんでした");
+        {
+            Debug.Log($"ルームに参加できませんでした: {result.ErrorMessage}");
+        }
         Debug.Log(result);
         Debug.Log($"参加したルームの名前:{runner.SessionInfo.Name}");
     }
@@ -87,7 +102,13 @@ JoinRoom(string roomNumber)
 
     public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) {}
 
-    public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) {}
+    public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) 
+    {
+        Debug.Log($"プレイヤーが参加しました: {player}");
+        Debug.Log($"IsSharedModeMasterClient: {runner.IsSharedModeMasterClient}");
+        Debug.Log($"SessionInfo IsValid: {runner.SessionInfo.IsValid}");
+        Debug.Log($"Runner State: {runner.State}");
+    }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) {}
 
