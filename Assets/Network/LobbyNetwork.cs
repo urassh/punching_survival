@@ -75,7 +75,7 @@ public class LobbyNetwork : INetworkRunnerCallbacks
     public void LeaveRoom()
     {
         Debug.Log("ルームを退出しました。");
-        if (runner != null && runner.IsRunning)
+        if (runner != null)
         {
             runner.Shutdown();
         }
