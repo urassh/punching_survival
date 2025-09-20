@@ -1,13 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
+using Fusion;
 using UnityEngine;
 using UnityEngine.UI;
-using Fusion;
 
-public class ConnectRoom : MonoBehaviour
+public class LobbyJoin : MonoBehaviour
 {
     public InputField roomNumberInput;
-    public Button joinButton;
     public NetworkRunner runnerPrefab;
     private LobbyNetwork lobbyNetwork;
 
@@ -18,10 +15,9 @@ public class ConnectRoom : MonoBehaviour
         DontDestroyOnLoad(runner.gameObject);
         lobbyNetwork = new(runner);
         runner.AddCallbacks(lobbyNetwork);
-        joinButton.onClick.AddListener(OnJoinButtonClicked);
     }
 
-    private void OnJoinButtonClicked()
+    public void OnInputJoin()
     {
         if (roomNumberInput == null) return;
         string roomNumber = roomNumberInput.text;
@@ -29,4 +25,15 @@ public class ConnectRoom : MonoBehaviour
 
         lobbyNetwork.JoinRoom(roomNumber);
     }
-}
+
+    public async void OnInputCancel()
+    {
+        await lobbyNetwork.LeaveRoomAsync();
+
+        NetworkRunner runner = FindObjectOfType<NetworkRunner>();
+        if (runner != null)
+            Destroy(runner.gameObject);
+
+        Scene.Start.LoadScene();
+    }
+} 
