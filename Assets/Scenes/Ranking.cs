@@ -30,8 +30,6 @@ public struct PlayerRankingData : INetworkStruct
 public class Ranking : NetworkBehaviour
 {
     private Dictionary<string, PlayerRankingData> playerData = new Dictionary<string, PlayerRankingData>();    public static Ranking Instance { get; private set; }
-
-    private int currentRank = 0;
     private void Awake()
     {
         if (Instance == null)
