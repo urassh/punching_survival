@@ -6,6 +6,8 @@ public class LobbyJoin : MonoBehaviour
 {
     public InputField roomNumberInput;
     public NetworkRunner runnerPrefab;
+    public NetworkObject masterClientPrefab;
+    public NetworkObject clientPrefab;
     private LobbyNetwork lobbyNetwork;
 
     void Start()
@@ -17,13 +19,13 @@ public class LobbyJoin : MonoBehaviour
         runner.AddCallbacks(lobbyNetwork);
     }
 
-    public void OnInputJoin()
+    public async void OnInputJoin()
     {
         if (roomNumberInput == null) return;
         string roomNumber = roomNumberInput.text;
         Debug.Log($"入力された文字列：{roomNumber}");
 
-        lobbyNetwork.JoinRoom(roomNumber);
+        await lobbyNetwork.JoinRoom(roomNumber);
     }
 
     public async void OnInputCancel()

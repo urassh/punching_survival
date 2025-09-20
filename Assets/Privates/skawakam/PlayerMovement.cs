@@ -3,73 +3,57 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 using UnityEngine.TextCore.Text;
+using Unity.VisualScripting;
 
+[RequireComponent(typeof(Rigidbody))]
 public class PlayerMovement : NetworkBehaviour
 {
-	private bool _jumpPressed;
-	private Vector3 _velocity;
-	private CharacterController _controller;
-	public float PlayerSpeed = 2f;
-	public float JumpForce = 5f;
-	public float GravityValue = -9.81f;
-	public Camera Camera;
+	    // 自分自身（ローカルプレイヤー）のインスタンスを保持するstatic変数
+    public static PlayerMovement Local { get; private set; }
+    private Rigidbody _rb;
 
-	public override void Spawned()
-	{
-		if (HasStateAuthority)
+    [SerializeField] private float PlayerSpeed = 50f;
+    [SerializeField] private Camera Camera;
+
+    public override void Spawned()
+    {
+		if (HasInputAuthority)
+		{
+			Local = this; // static変数に自分を登録
+		}
+        if (HasStateAuthority)
 		{
 			Camera = Camera.main;
 			Camera.GetComponent<FirstPersonCamera>().Target = transform;
 		}
-	}
+    }
 
-	private void Awake()
-	{
-		_controller = GetComponent<CharacterController>();
-	}
+    private void Awake()
+    {
+        _rb = GetComponent<Rigidbody>();
+        _rb.constraints = RigidbodyConstraints.FreezeRotation;
+        _rb.useGravity = true;
+    }
 
-	void Update()
-	{
-		if (Input.GetButtonDown("Jump"))
+    public override void FixedUpdateNetwork()
+    {	
+		if (!HasInputAuthority)
 		{
-			_jumpPressed = true;
-		}
-	}
-
-	public override void FixedUpdateNetwork()
-	{
-		if (_controller.isGrounded)
-		{
-			_velocity = new Vector3(0, -1, 0);
+			return;
 		}
 
-		Quaternion cameraRotationY = Quaternion.Euler(0, Camera.transform.rotation.eulerAngles.y, 0);
+        Quaternion cameraRotationY = Quaternion.Euler(0, Camera.transform.rotation.eulerAngles.y, 0);
+        Vector3 camForward = cameraRotationY * Vector3.forward;
+        Vector3 camRight   = cameraRotationY * Vector3.right;
 
-		// カメラ基準の前・右を作る
-		Vector3 camForward = cameraRotationY * Vector3.forward;
-		Vector3 camRight   = cameraRotationY * Vector3.right;
+        Vector3 moveDir = (camForward * JoyStickMovement.JoyStickPositionY +
+                           camRight   * JoyStickMovement.JoyStickPositionX).normalized;
+        Vector3 targetVelocity = moveDir * PlayerSpeed;
+        Vector3 velocityChange = targetVelocity - new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
 
-		// 入力方向をカメラ基準で計算
-		Vector3 moveDir = (camForward * JoyStickMovement.JoyStickPositionY +
-						camRight * JoyStickMovement.JoyStickPositionX).normalized;
+        _rb.AddForce(new Vector3(velocityChange.x, 0, velocityChange.z), ForceMode.VelocityChange);
 
-		// 移動処理
-		Vector3 move = moveDir * Runner.DeltaTime * PlayerSpeed;
-
-		_velocity.y += GravityValue * Runner.DeltaTime;
-		if (_jumpPressed && _controller.isGrounded)
-		{
-			_velocity.y += JumpForce;
-		}
-
-		_controller.Move(move + _velocity * Runner.DeltaTime);
-
-		// 入力があるときだけ向きを変える
-		if (moveDir != Vector3.zero)
-		{
-			transform.forward = moveDir;
-		}
-
-		_jumpPressed = false;
-	}
+        if (moveDir != Vector3.zero)
+            transform.forward = moveDir;
+    }
 }

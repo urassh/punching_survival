@@ -16,8 +16,8 @@ public struct SceneInfo
 
     public readonly void LoadScene(NetworkRunner runner)
     {
-        // if (runner.IsSharedModeMasterClient)
-        runner.LoadScene(GetSceneRef(), LoadSceneMode.Additive);
+        if (runner.IsSharedModeMasterClient)
+            runner.LoadScene(GetSceneRef(), LoadSceneMode.Single);
     }
 
     public readonly void LoadScene()
