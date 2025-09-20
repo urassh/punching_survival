@@ -27,6 +27,9 @@ public class PlayerInfo : NetworkBehaviour
     [Networked] public int PlayerCount { get; set; }
     
     private const int MAX_PLAYERS = 4;
+    
+    // プレイヤー削除完了のコールバック
+    public System.Action OnPlayerRemoved;
 
     public override void Spawned()
     {   
@@ -61,16 +64,23 @@ public class PlayerInfo : NetworkBehaviour
         RPC_AddPlayer(playerId, playerName);
     }
 
-    public override void Despawned(NetworkRunner runner, bool hasState)
+    public void RemoveCurrentPlayer()
     {
-        // プレイヤーが切断した時に自分の情報を削除
         string playerId = PlayerPrefs.GetString("playerId", "");
-        if (!string.IsNullOrEmpty(playerId))
+        string playerName = PlayerPrefs.GetString("PlayerName", "Player");
+
+        Debug.Log($"[RemoveCurrentPlayer] 開始: ID={playerId}, Name={playerName}");
+
+        // PlayerIdまたはPlayerNameが空の場合は処理を中断
+        if (string.IsNullOrEmpty(playerId) || string.IsNullOrEmpty(playerName))
         {
-            RPC_RemovePlayer(playerId);
+            Debug.LogWarning("[RemoveCurrentPlayer] PlayerIdまたはPlayerNameが空のため、プレイヤー削除をスキップします");
+            return;
         }
 
-        base.Despawned(runner, hasState);
+        Debug.Log($"[RemoveCurrentPlayer] RPC呼び出し前: ID={playerId}, Name={playerName}");
+        RPC_RemovePlayer(playerId, playerName);
+        Debug.Log($"[RemoveCurrentPlayer] RPC呼び出し後: ID={playerId}, Name={playerName}");
     }
 
     /// <summary>
@@ -114,24 +124,70 @@ public class PlayerInfo : NetworkBehaviour
     /// プレイヤーをリストから削除
     /// </summary>
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void RPC_RemovePlayer(string playerId)
+    public void RPC_RemovePlayer(string playerId, string playerName)
     {
+        // StateAuthorityでのみ削除処理を実行
+        if (!Object.HasStateAuthority)
+        {
+            Debug.LogWarning("StateAuthorityでないため削除処理をスキップします");
+            return;
+        }
+
+        // PlayerIdまたはPlayerNameが空の場合は削除しない
+        if (string.IsNullOrEmpty(playerId) || string.IsNullOrEmpty(playerName))
+        {
+            Debug.LogWarning("PlayerIdまたはPlayerNameが空のため、プレイヤー削除をスキップします");
+            return;
+        }
+
+        // 削除対象のプレイヤーを検索
+        int removeIndex = -1;
         for (int i = 0; i < PlayerCount; i++)
         {
             if (PlayerIds[i].ToString() == playerId)
             {
-                // 後続の要素を前に詰める
-                for (int j = i; j < PlayerCount - 1; j++)
-                {
-                    PlayerIds.Set(j, PlayerIds[j + 1]);
-                    PlayerNames.Set(j, PlayerNames[j + 1]);
-                }
-                
-                PlayerCount--;
-                Debug.Log($"プレイヤー削除: ID {playerId} - 現在のプレイヤー数: {PlayerCount}");
-                return;
+                removeIndex = i;
+                break;
             }
         }
+
+        // プレイヤーが見つからない場合
+        if (removeIndex == -1)
+        {
+            Debug.LogWarning($"プレイヤーID {playerId} が見つかりません。削除をスキップします");
+            return;
+        }
+
+        // 配列を詰める（削除したインデックス以降を前に移動）
+        for (int i = removeIndex; i < PlayerCount - 1; i++)
+        {
+            PlayerIds.Set(i, PlayerIds[i + 1]);
+            PlayerNames.Set(i, PlayerNames[i + 1]);
+        }
+
+        // 最後の要素をクリア
+        PlayerIds.Set(PlayerCount - 1, "");
+        PlayerNames.Set(PlayerCount - 1, "");
+        
+        // プレイヤー数を減らす
+        PlayerCount--;
+        
+        Debug.Log($"プレイヤー削除: {playerName} (ID: {playerId}) - 現在のプレイヤー数: {PlayerCount}");
+        
+        // 全クライアントに削除完了を通知
+        RPC_NotifyPlayerRemoved(playerId, playerName);
+    }
+
+    /// <summary>
+    /// プレイヤー削除完了を全クライアントに通知
+    /// </summary>
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public void RPC_NotifyPlayerRemoved(string playerId, string playerName)
+    {
+        Debug.Log($"プレイヤー削除完了通知: {playerName} (ID: {playerId})");
+        
+        // 削除完了をコールバックで通知
+        OnPlayerRemoved?.Invoke();
     }
 
     /// <summary>
