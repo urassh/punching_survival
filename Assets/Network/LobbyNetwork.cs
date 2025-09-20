@@ -42,7 +42,9 @@ public class LobbyNetwork : INetworkRunnerCallbacks
         Debug.Log($"生成したルームの名前:{runner.SessionInfo.Name}");
     }
 
-    public async void JoinRoom(string roomNumber)
+    public async 
+    Task
+JoinRoom(string roomNumber)
     {
         if (runner == null || !runner.IsRunning || !IsExistRoom(roomNumber)) return;
 
