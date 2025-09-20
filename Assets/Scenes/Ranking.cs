@@ -49,6 +49,7 @@ public class Ranking : NetworkBehaviour
         if (!playerData.ContainsKey(playerId))
         {
             playerData[playerId] = new PlayerRankingData(playerId, playerName);
+            currentRank++;
         }
     }
 
@@ -61,7 +62,7 @@ public class Ranking : NetworkBehaviour
     {
         if (playerData.ContainsKey(playerId))
         {
-            currentRank++;
+            currentRank--;
             var player = playerData[playerId];
             player.Rank = currentRank;
             playerData[playerId] = player;
