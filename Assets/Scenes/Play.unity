@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a61cd5239f9a04b8bb9becaf19c3518c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 1944359683650577100, guid: 47612c325ef364c9fa23be19a4ad5798, type: 3}
+  playerPrefab: {fileID: 6925090075186637679, guid: 691234c554d0c4894b242cf6b460ac36, type: 3}
 --- !u!4 &118603071
 Transform:
   m_ObjectHideFlags: 0
@@ -511,7 +511,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1eddaf8b8e4b64536b7b21932121aa1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Target: {fileID: 0}
+  Target: {fileID: 5293734298677235986, guid: 691234c554d0c4894b242cf6b460ac36, type: 3}
   offset: {x: 0, y: 4, z: -5}
   smoothSpeed: 5
 --- !u!1001 &1484491896

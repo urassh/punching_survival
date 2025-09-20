@@ -14,6 +14,7 @@ public class PlayerMovement : NetworkBehaviour
 
     [SerializeField] private float PlayerSpeed = 50f;
     [SerializeField] private Camera Camera;
+	Animator anim;
 
     public override void Spawned()
 	{
@@ -28,11 +29,12 @@ public class PlayerMovement : NetworkBehaviour
 		}
 	}
 
-    private void Awake()
-    {
-        _rb = GetComponent<Rigidbody>();
-        _rb.constraints = RigidbodyConstraints.FreezeRotation;
-        _rb.useGravity = true;
+	private void Awake()
+	{
+		_rb = GetComponent<Rigidbody>();
+		_rb.constraints = RigidbodyConstraints.FreezeRotation;
+		_rb.useGravity = true;
+		anim = GetComponent<Animator>();
     }
 
 	public override void FixedUpdateNetwork()
@@ -44,6 +46,8 @@ public class PlayerMovement : NetworkBehaviour
 		Vector3 moveDir = (camForward * JoyStickMovement.JoyStickPositionY +
 						   camRight * JoyStickMovement.JoyStickPositionX).normalized;
 		Vector3 targetVelocity = moveDir * PlayerSpeed;
+
+		anim.SetFloat("Speed", targetVelocity.magnitude, 0.1f, Runner.DeltaTime);
 		Vector3 velocityChange = targetVelocity - new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
 		Debug.Log(moveDir);
 		_rb.AddForce(new Vector3(velocityChange.x, 0, velocityChange.z), ForceMode.VelocityChange);
