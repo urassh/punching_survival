@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Fusion;
 using Fusion.Sockets;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LobbyNetwork : INetworkRunnerCallbacks
 {
@@ -163,7 +164,8 @@ public class LobbyNetwork : INetworkRunnerCallbacks
         Debug.Log($"IsSharedModeMasterClient: {runner.IsSharedModeMasterClient}");
 
         // コールバック関数が設定されている場合は実行
-        OnConnectedCallback?.Invoke(runner);
+        if (runner.IsSharedModeMasterClient)
+            OnConnectedCallback?.Invoke(runner);
     }
 
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
@@ -179,7 +181,11 @@ public class LobbyNetwork : INetworkRunnerCallbacks
 
     public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) {}
 
-    public void OnSceneLoadDone(NetworkRunner runner) {}
+    public void OnSceneLoadDone(NetworkRunner runner)
+    {
+        if (SceneManager.GetActiveScene().name == "Lobby")
+            OnConnectedCallback?.Invoke(runner);
+    }
 
     public void OnSceneLoadStart(NetworkRunner runner) {}
 }

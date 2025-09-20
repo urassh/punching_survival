@@ -15,6 +15,7 @@ public class Lobby : MonoBehaviour
     {
         NetworkRunner runner = FindObjectOfType<NetworkRunner>();
 
+        // LobbyCreate -> Lobby
         if (runner == null)
         {
             // prefab(ゲームオブジェクトの設計書)を使ってゲームオブジェクトをコピーする
@@ -28,14 +29,19 @@ public class Lobby : MonoBehaviour
             Debug.Log($"ルーム番号 {roomNumber} でルーム作成を開始します");
             lobbyNetwork.CreateRoom(roomNumber.ToString());
         }
+        else
+        {
+            Debug.Log("Room Name: " + runner.SessionInfo.Name);
+            roomNumber = int.Parse(runner.SessionInfo.Name);
+            lobbyNetwork = new(runner);
+            lobbyNetwork.OnConnectedCallback += OnConnected;
+            Debug.Log($"ルーム番号 {roomNumber} のルームに参加します");
+        }
     }
 
     public void OnInputStart()
     {
         NetworkRunner runner = FindObjectOfType<NetworkRunner>();
-
-        Debug.Log("LOAD START");
-        Debug.Log("runner.IsSharedModeMasterClient: " + runner.IsSharedModeMasterClient);
         
         Scene.Play.LoadScene(runner);
     }
@@ -53,6 +59,8 @@ public class Lobby : MonoBehaviour
 
     public void OnConnected(NetworkRunner runner)
     {
+        Debug.Log("OnConnected");
+
         if (connectedUI != null && connectingUI != null)
         {
             connectedUI.SetActive(true);
