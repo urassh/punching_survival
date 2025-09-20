@@ -105,6 +105,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ef54979ea060c104ab994aa1d23af773, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4348066800113612590}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ef54979ea060c104ab994aa1d23af773, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3724733810131137702}
   m_SourcePrefab: {fileID: 100100000, guid: ef54979ea060c104ab994aa1d23af773, type: 3}
 --- !u!1 &7081740228325967099 stripped
 GameObject:
@@ -130,6 +133,7 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 859257130693241414}
   - {fileID: 5319750473571623379}
+  - {fileID: 3724733810131137702}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &859257130693241414
 MonoBehaviour:
@@ -205,10 +209,33 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 1
+  m_Radius: 0.7
+  m_Height: 2
   m_Direction: 1
-  m_Center: {x: 0, y: 0.5, z: 0}
+  m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &3724733810131137702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7081740228325967099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a591d221a634417e9827eb58e17de84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stateAuthorityChangeErrorCorrectionDelta: 0
+  SyncScale: 0
+  SyncParent: 1
+  _interpolationTarget: {fileID: 0}
+  UsePreciseRotation: 0
+  UseRenderSleepThresholds: 1
+  RenderThresholds:
+    UseEnergy: 1
+    Position: 0.01
+    Rotation: 0.01
+    Scale: 0.01
 --- !u!4 &7569624751401262657 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ef54979ea060c104ab994aa1d23af773, type: 3}

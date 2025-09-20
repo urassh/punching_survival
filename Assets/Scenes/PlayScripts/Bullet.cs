@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
+using Fusion.Addons.Physics;
 
 public class Bullet : NetworkBehaviour
 {
@@ -12,14 +13,13 @@ public class Bullet : NetworkBehaviour
 	private float _lifeTimer;
 	private Rigidbody _rigidbody;
 
-
 	public override void Spawned()
 	{
 		_rigidbody = GetComponent<Rigidbody>();
 		_rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
-		_rigidbody.velocity = transform.forward * BulletSpeed;
 		_lifeTimer = LifeTime;
 		_rigidbody.useGravity = false;
+		_rigidbody.AddForce(transform.forward * BulletSpeed, ForceMode.VelocityChange);
 	}
 
 	// Update is called once per frame
