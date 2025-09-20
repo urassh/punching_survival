@@ -14,9 +14,11 @@ GameObject:
   - component: {fileID: 2663178390584606631}
   - component: {fileID: 1702512084913425446}
   - component: {fileID: -4540649334568492879}
+  - component: {fileID: 5767920268597560172}
+  - component: {fileID: 7411520526948034479}
   m_Layer: 0
   m_Name: Bullet
-  m_TagString: Untagged
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -31,7 +33,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -960, y: -646.7757, z: -0.010832377}
-  m_LocalScale: {x: 1.5597075, y: 1.5597075, z: 1.5597075}
+  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -123,7 +125,9 @@ MonoBehaviour:
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []
-  NetworkedBehaviours: []
+  NetworkedBehaviours:
+  - {fileID: 5767920268597560172}
+  - {fileID: 7411520526948034479}
   ForceRemoteRenderTimeframe: 0
 --- !u!54 &-4540649334568492879
 Rigidbody:
@@ -151,4 +155,42 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
+--- !u!114 &5767920268597560172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5259018175067010719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a591d221a634417e9827eb58e17de84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stateAuthorityChangeErrorCorrectionDelta: 0
+  SyncScale: 0
+  SyncParent: 1
+  _interpolationTarget: {fileID: 0}
+  UsePreciseRotation: 0
+  UseRenderSleepThresholds: 1
+  RenderThresholds:
+    UseEnergy: 1
+    Position: 0.01
+    Rotation: 0.01
+    Scale: 0.01
+--- !u!114 &7411520526948034479
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5259018175067010719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecc737cde160345a4aa439a36a10583e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BulletSpeed: 10
+  LifeTime: 5
+  KnockbackForce: 10

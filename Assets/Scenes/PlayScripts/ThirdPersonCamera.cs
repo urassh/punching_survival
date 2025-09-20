@@ -5,32 +5,53 @@ using UnityEngine;
 public class ThirdPersonCamera : MonoBehaviour
 {
     public Transform Target;
-    public Vector3 offset = new Vector3(0, 4.0f, -5.0f);
-    public float smoothSpeed = 5.0f;
-    readonly Quaternion _BASE_ROTATION = Quaternion.Euler(90, 0, 0);
+	public float Distance = 8.0f;
+	public Vector3 LookAtOffset = new Vector3(0, 6f, 0);
+
+	// ジャイロの基準となる回転をリセットするためのオフセット
+    private Quaternion _gyroOffset = Quaternion.identity;
+
+    void Start()
+    {
+        // ジャイロセンサーが利用可能か確認し、有効にする
+        if (SystemInfo.supportsGyroscope)
+        {
+            Input.gyro.enabled = true;
+            ResetGyroRotation(); // 起動時の向きを基準にする
+        }
+    }
+
+	/// <summary>
+	/// 現在のジャイロの向きを正面としてリセットする
+	/// </summary>
+	public void ResetGyroRotation()
+	{
+		if (SystemInfo.supportsGyroscope)
+		{
+			// 現在のジャイロの向きの逆回転を保存しておく
+			_gyroOffset = Quaternion.Inverse(Input.gyro.attitude);
+		}
+	}
 
     void LateUpdate()
     {
-        if (Target == null)
+        if (Target == null || !SystemInfo.supportsGyroscope)
         {
             return;
         }
 
-        Vector3 desiredPosition = Target.position + offset;
-        Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
-        transform.position = smoothedPosition;
+        // 1. ジャイロの現在の回転を取得し、オフセットを適用して基準を補正
+        Quaternion gyroRotation = _gyroOffset * Input.gyro.attitude;
+        
+        // 2. Unityの座標系に合わせて回転を調整
+        gyroRotation = new Quaternion(gyroRotation.x, gyroRotation.y, -gyroRotation.z, -gyroRotation.w);
 
-        // ジャイロセンサーの向きを適用
-        if (SystemInfo.supportsGyroscope)
-        {
-            Quaternion gyro = Input.gyro.attitude;
-            // カメラをジャイロの向きに合わせる
-            transform.localRotation = _BASE_ROTATION * new Quaternion(-gyro.x, -gyro.y, gyro.z, gyro.w);
-        }
-        else
-        {
-            // ジャイロが非対応の場合は、これまで通りターゲットを向く
-            transform.LookAt(Target);
-        }
+        // 3. 基準となるカメラの位置（キャラクターの真後ろ）を、ジャイロの回転で動かす
+        Vector3 cameraDirection = gyroRotation * Vector3.back; // Vector3.backは(0, 0, -1)
+        Vector3 desiredPosition = Target.position + cameraDirection * Distance;
+
+        // 4. カメラの位置と向きをセット
+        transform.position = desiredPosition;
+        transform.LookAt(Target.position + LookAtOffset); // 常にターゲットの中心（少し上）を見る
     }
 }
