@@ -1,10 +1,9 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class StartState : MonoBehaviour
 {
-    [SerializeField] private TMP_InputField playerNameInputField;
+    [SerializeField] private InputField playerNameInputField;
     [SerializeField] private Button joinButton;
     [SerializeField] private Button createButton;
     
