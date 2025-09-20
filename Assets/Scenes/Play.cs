@@ -33,8 +33,9 @@ public class Play : MonoBehaviour
         }
     }
 
+    // PlaySceneがロードされたときに呼ばれるコールバック
     private void OnLoadedPlayScene(NetworkRunner runner)
     {
-        runner.Spawn(playerPrefab);
+        runner.Spawn(playerPrefab);        
     }
 }
