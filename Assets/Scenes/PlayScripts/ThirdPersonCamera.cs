@@ -19,16 +19,9 @@ public class ThirdPersonCamera : MonoBehaviour
         Vector3 desiredPosition = Target.position + offset;
         Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
         transform.position = smoothedPosition;
-        Debug.Log("JoyStickPositionX: " + JoyStickMovement.JoyStickPositionX);
-        Debug.Log("JoyStickPositionY: " + JoyStickMovement.JoyStickPositionY);
+
         // ジャイロセンサーの向きを適用
-        if(JoyStickMovement.JoyStickPositionX != 0 || JoyStickMovement.JoyStickPositionY != 0)
-        {
-            float targetAngle = Mathf.Atan2(JoyStickMovement.JoyStickPositionX, JoyStickMovement.JoyStickPositionY) * Mathf.Rad2Deg;
-            Quaternion rotation = Quaternion.Euler(0, targetAngle, 0);
-            transform.rotation = Quaternion.Slerp(transform.rotation, rotation, smoothSpeed * Time.deltaTime);
-        }
-        else if (SystemInfo.supportsGyroscope)
+        if (SystemInfo.supportsGyroscope)
         {
             Quaternion gyro = Input.gyro.attitude;
             // カメラをジャイロの向きに合わせる
