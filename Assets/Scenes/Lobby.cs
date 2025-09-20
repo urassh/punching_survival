@@ -7,6 +7,7 @@ public class Lobby : MonoBehaviour
     public RoomNumberText roomNumberText;
     public GameObject connectedUI;
     public GameObject connectingUI;
+    public NetworkObject playerPrefab;
     private LobbyNetwork lobbyNetwork;
     private int roomNumber;
 
@@ -14,28 +15,33 @@ public class Lobby : MonoBehaviour
     {
         NetworkRunner runner = FindObjectOfType<NetworkRunner>();
 
+        // LobbyCreate -> Lobby
         if (runner == null)
         {
             // prefab(ゲームオブジェクトの設計書)を使ってゲームオブジェクトをコピーする
             runner = Instantiate(networkRunnerPrefab);
             // ゲーム終了まで保持する(キャンセル時は削除される)
             DontDestroyOnLoad(runner.gameObject);
+            lobbyNetwork = new(runner);
+            lobbyNetwork.OnConnectedCallback += OnConnected;
+            roomNumber = Random.Range(1000, 10000);
+
+            Debug.Log($"ルーム番号 {roomNumber} でルーム作成を開始します");
+            lobbyNetwork.CreateRoom(roomNumber.ToString());
         }
-
-        lobbyNetwork = new(runner);
-        lobbyNetwork.OnConnectedCallback += OnConnected;
-        roomNumber = CreateRoomNum();
-
-        Debug.Log($"ルーム番号 {roomNumber} でルーム作成を開始します");
-        lobbyNetwork.CreateRoom(roomNumber.ToString());
+        else
+        {
+            Debug.Log("Room Name: " + runner.SessionInfo.Name);
+            roomNumber = int.Parse(runner.SessionInfo.Name);
+            lobbyNetwork = new(runner);
+            lobbyNetwork.OnConnectedCallback += OnConnected;
+            Debug.Log($"ルーム番号 {roomNumber} のルームに参加します");
+        }
     }
 
     public void OnInputStart()
     {
         NetworkRunner runner = FindObjectOfType<NetworkRunner>();
-
-        Debug.Log("LOAD START");
-        Debug.Log("runner.IsSharedModeMasterClient: " + runner.IsSharedModeMasterClient);
         
         Scene.Play.LoadScene(runner);
     }
@@ -59,10 +65,5 @@ public class Lobby : MonoBehaviour
             connectingUI.SetActive(false);
             roomNumberText.SetRoomNumber(roomNumber);
         }
-    }
-
-    private int CreateRoomNum()
-    {
-        return Random.Range(1000, 10000);
     }
 }
