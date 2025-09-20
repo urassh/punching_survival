@@ -24,7 +24,7 @@ public class PlayerMovement : NetworkBehaviour
         if (HasStateAuthority)
 		{
 			Camera = Camera.main;
-			Camera.GetComponent<FirstPersonCamera>().Target = transform;
+			Camera.GetComponent<ThirdPersonCamera>().Target = transform;
 		}
     }
 
@@ -36,12 +36,7 @@ public class PlayerMovement : NetworkBehaviour
     }
 
     public override void FixedUpdateNetwork()
-    {	
-		if (!HasInputAuthority)
-		{
-			return;
-		}
-
+    {
         Quaternion cameraRotationY = Quaternion.Euler(0, Camera.transform.rotation.eulerAngles.y, 0);
         Vector3 camForward = cameraRotationY * Vector3.forward;
         Vector3 camRight   = cameraRotationY * Vector3.right;
@@ -50,8 +45,8 @@ public class PlayerMovement : NetworkBehaviour
                            camRight   * JoyStickMovement.JoyStickPositionX).normalized;
         Vector3 targetVelocity = moveDir * PlayerSpeed;
         Vector3 velocityChange = targetVelocity - new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
-
-        _rb.AddForce(new Vector3(velocityChange.x, 0, velocityChange.z), ForceMode.VelocityChange);
+		Debug.Log(moveDir);
+		_rb.AddForce(new Vector3(velocityChange.x, 0, velocityChange.z), ForceMode.VelocityChange);
 
         if (moveDir != Vector3.zero)
             transform.forward = moveDir;
