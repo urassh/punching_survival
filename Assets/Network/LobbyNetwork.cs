@@ -11,6 +11,9 @@ public class LobbyNetwork : INetworkRunnerCallbacks
     private List<SessionInfo> cachedSessionList = new();
     private readonly NetworkRunner runner;
     public Action<NetworkRunner> OnConnectedCallback { get; set; }
+    public Action<NetworkRunner> OnLoadedSceneCallback { get; set; }
+    public Action OnPlayerLeaveCallback { get; set; }
+    public Action<string> OnJoinFailedCallback { get; set; }
     private TaskCompletionSource<bool> sessionListUpdatedTask;
 
     public LobbyNetwork(NetworkRunner runner)
@@ -72,6 +75,7 @@ public class LobbyNetwork : INetworkRunnerCallbacks
         if (!IsExistRoom(roomNumber)) 
         {
             Debug.LogError($"ルーム '{roomNumber}' が見つかりません");
+            OnJoinFailedCallback?.Invoke($"ルーム '{roomNumber}' が見つかりません");
             return;
         }
 
@@ -91,6 +95,7 @@ public class LobbyNetwork : INetworkRunnerCallbacks
         else
         {
             Debug.Log($"ルームに参加できませんでした: {result.ErrorMessage}");
+            OnJoinFailedCallback?.Invoke($"ルームに参加できませんでした: {result.ErrorMessage}");
         }
         Debug.Log(result);
         Debug.Log($"参加したルームの名前:{runner.SessionInfo.Name}");
@@ -111,6 +116,10 @@ public class LobbyNetwork : INetworkRunnerCallbacks
     public async Task LeaveRoomAsync()
     {
         Debug.Log("ルームを退出しました。");
+        
+        // プレイヤー退出のコールバックを実行
+        OnPlayerLeaveCallback?.Invoke();
+        
         if (runner != null)
         {
             await runner.Shutdown(shutdownReason: ShutdownReason.Ok);
@@ -173,8 +182,11 @@ public class LobbyNetwork : INetworkRunnerCallbacks
         cachedSessionList = sessionList;
         Debug.Log($"セッションリストが更新されました。現在のルーム数: {cachedSessionList.Count}");
         
-        // セッションリストの更新完了を通知
-        sessionListUpdatedTask?.SetResult(true);
+        // セッションリストの更新完了を通知（まだ完了していない場合のみ）
+        if (sessionListUpdatedTask != null && !sessionListUpdatedTask.Task.IsCompleted)
+        {
+            sessionListUpdatedTask.SetResult(true);
+        }
     }
 
     public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) {}
@@ -184,7 +196,7 @@ public class LobbyNetwork : INetworkRunnerCallbacks
     public void OnSceneLoadDone(NetworkRunner runner)
     {
         if (SceneManager.GetActiveScene().name == "Lobby")
-            OnConnectedCallback?.Invoke(runner);
+            OnLoadedSceneCallback?.Invoke(runner);
     }
 
     public void OnSceneLoadStart(NetworkRunner runner) {}
