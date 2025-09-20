@@ -30,8 +30,6 @@ public struct PlayerRankingData : INetworkStruct
 public class Ranking : NetworkBehaviour
 {
     private Dictionary<string, PlayerRankingData> playerData = new Dictionary<string, PlayerRankingData>();
-    private List<PlayerRankingData> rankingList = new List<PlayerRankingData>();
-    private int currentRank = 0;
     private void Awake()
     {
         DontDestroyOnLoad(this.gameObject);
@@ -49,8 +47,15 @@ public class Ranking : NetworkBehaviour
         if (!playerData.ContainsKey(playerId))
         {
             playerData[playerId] = new PlayerRankingData(playerId, playerName);
-            currentRank++;
         }
+    }
+
+    /// <summary>
+    /// 生存中（Rank = 0）のプレイヤー数を取得
+    /// </summary>
+    public int GetSurvivingPlayersCount()
+    {
+        return playerData.Values.Count(p => p.Rank == 0);
     }
 
     /// <summary>
@@ -62,9 +67,8 @@ public class Ranking : NetworkBehaviour
     {
         if (playerData.ContainsKey(playerId))
         {
-            currentRank--;
             var player = playerData[playerId];
-            player.Rank = currentRank;
+            player.Rank = GetSurvivingPlayersCount() + 1; // 脱落ランクを設定
             playerData[playerId] = player;
         }
     }
@@ -76,15 +80,11 @@ public class Ranking : NetworkBehaviour
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RPC_SetSurvivedPlayerRank(string playerId)
     {
-        for (int i = 0; i < rankingList.Count; i++)
+        if (playerData.ContainsKey(playerId))
         {
-            if (rankingList[i].PlayerId.ToString() == playerId)
-            {
-                var player = rankingList[i];
-                player.Rank = 1; // 1位
-                rankingList[i] = player;
-                break;
-            }
+            var player = playerData[playerId];
+            player.Rank = 1; // 1位
+            playerData[playerId] = player;
         }
     }
 
@@ -114,12 +114,4 @@ public class Ranking : NetworkBehaviour
     //     return rankingList.OrderBy(p => p.Rank).ToList();
     // }
 
-    /// <summary>
-    /// ランキングをリセット
-    /// </summary>
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void RPC_ResetRanking()
-    {
-        rankingList.Clear();
-    }
 }
