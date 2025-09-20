@@ -1,0 +1,126 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8438310074878816027
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 639247ca83abc874e893eb93af2b5e44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 0
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Tri_3
+  m_Shader: {fileID: -6465566751694194690, guid: 3cbb43eabd313b64096c60f1326b61fe, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BG_Texture:
+        m_Texture: {fileID: 2800000, guid: 3cdc337392e61c04fb569d7388601fa7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _P1_Texture:
+        m_Texture: {fileID: 2800000, guid: 3cdc337392e61c04fb569d7388601fa7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _P2_Texture:
+        m_Texture: {fileID: 2800000, guid: a83f8665cbbfba1409168cc99c6e01f5, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Patterns_1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Patterns_1_P1:
+        m_Texture: {fileID: 2800000, guid: 339af73857ee4a54a81f9e6f2328ae94, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Patterns_2_P2:
+        m_Texture: {fileID: 2800000, guid: 7431413c9211e1241b32c758f2f3a679, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture:
+        m_Texture: {fileID: 2800000, guid: 339af73857ee4a54a81f9e6f2328ae94, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_3170c6cb95594a39beea66c1941c2f22_Out_0:
+        m_Texture: {fileID: 2800000, guid: 7431413c9211e1241b32c758f2f3a679, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_4d6ee695f749484fb9f18a27dbbcd9db_Out_0:
+        m_Texture: {fileID: 2800000, guid: ca5419efd4ad17b43b1587e9a8185fa6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_c74b8115afb6440d98d1c5579b5e05ad_Out_0:
+        m_Texture: {fileID: 2800000, guid: 339af73857ee4a54a81f9e6f2328ae94, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _Animation_X: 0
+    - _Animation_Y: 0.02
+    - _BG1_Pattern_Scale: 0.8
+    - _BG1_Scale: 0.3
+    - _BG_scale: 0.8
+    - _BUILTIN_QueueControl: 0
+    - _BUILTIN_QueueOffset: 0
+    - _Blending: 0.81
+    - _Boolean: 0
+    - _Darken: 0
+    - _Default_Noise_Texture: 1
+    - _Disable_Enable_Noise_texture_Default: 1
+    - _Enable_Texture: 1
+    - _Hue_Enable_Disable: 1
+    - _Hue_Shift: 0.869
+    - _Hue_Value: 0.864
+    - _Noise_Scale: 0
+    - _Noise_Speed: 0.4
+    - _Noise_Strength: 0
+    - _P1_Animation_X: 0.02
+    - _P1_Animation_Y: 0.03
+    - _P1_Opacity: 0.293
+    - _P1_Scale: 3
+    - _P2_Animation_X: 0
+    - _P2_Animation_Y: -0.01
+    - _P2_Opacity: -0.4
+    - _P2_Opacity_1: 1
+    - _P2_Scale: 2
+    - _Patterns_1_Opacity: 1
+    - _Posterize: 0
+    - _Posterize_Intensity: 70.44
+    - _Saturation: 1
+    - _Strength: 0
+    - _Strength_CF: 0
+    - _Twirl_Strength: 0
+    - _Twirl_on_Pattern1_P1: 0
+    - _Twirl_on_Pattern2_P2: 0
+    - _Use_Default_Noise_Texture: 0
+    m_Colors:
+    - _BG1_Color1: {r: 0.015686277, g: 0.020482052, b: 0.14901961, a: 0}
+    - _BG1_Color2: {r: 0, g: 0.49747166, b: 0.9056604, a: 1}
+    - _BG1_Offset: {r: 4, g: 1, b: 0, a: 0}
+    - _BG1_Tiling: {r: 1.5, g: 1.5, b: 0, a: 0}
+    - _Color_Filter: {r: 0, g: 0, b: 0, a: 0}
+    - _Color_Filter_CF: {r: 1, g: 0.66279554, b: 0, a: 0}
+    - _Noise_Tile_X_Y: {r: 12, g: 12, b: 0, a: 0}
+    - _P1_Color: {r: 0.098296165, g: 0, b: 1, a: 0}
+    - _P2_Color: {r: 0, g: 0.47075644, b: 1.6751966, a: 0}
+  m_BuildTextureStacks: []
