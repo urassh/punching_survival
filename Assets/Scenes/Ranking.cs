@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using Fusion;
 using UnityEngine;
 
 /// <summary>
@@ -26,10 +29,14 @@ public struct PlayerRankingData : INetworkStruct
 /// </summary>
 public class Ranking : NetworkBehaviour
 {
+    private Dictionary<string, PlayerRankingData> playerData = new Dictionary<string, PlayerRankingData>();
+    private List<PlayerRankingData> rankingList = new List<PlayerRankingData>();
+    private int currentRank = 0;
     private void Awake()
     {
         DontDestroyOnLoad(this.gameObject);
     }
+
 
     /// <summary>
     /// プレイヤーをランキングに登録（RPC版）
@@ -39,6 +46,10 @@ public class Ranking : NetworkBehaviour
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RPC_RegisterPlayer(string playerId, string playerName)
     {
+        if (!playerData.ContainsKey(playerId))
+        {
+            playerData[playerId] = new PlayerRankingData(playerId, playerName);
+        }
     }
 
     /// <summary>
@@ -48,6 +59,13 @@ public class Ranking : NetworkBehaviour
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RPC_SetDropPlayerRank(string playerId)
     {
+        if (playerData.ContainsKey(playerId))
+        {
+            currentRank++;
+            var player = playerData[playerId];
+            player.Rank = currentRank;
+            playerData[playerId] = player;
+        }
     }
 
     /// <summary>
@@ -57,6 +75,16 @@ public class Ranking : NetworkBehaviour
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RPC_SetSurvivedPlayerRank(string playerId)
     {
+        for (int i = 0; i < rankingList.Count; i++)
+        {
+            if (rankingList[i].PlayerId.ToString() == playerId)
+            {
+                var player = rankingList[i];
+                player.Rank = 1; // 1位
+                rankingList[i] = player;
+                break;
+            }
+        }
     }
 
     /// <summary>
@@ -77,11 +105,20 @@ public class Ranking : NetworkBehaviour
         return dummyList;
     }
 
+    // /// <summary>
+    // /// ランキングを順位順で取得（クライアント側用）
+    // /// </summary>
+    // public List<PlayerRankingData> GetSortedRankingList()
+    // {
+    //     return rankingList.OrderBy(p => p.Rank).ToList();
+    // }
+
     /// <summary>
     /// ランキングをリセット
     /// </summary>
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RPC_ResetRanking()
     {
+        rankingList.Clear();
     }
 }
