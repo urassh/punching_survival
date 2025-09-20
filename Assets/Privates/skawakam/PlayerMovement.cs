@@ -9,7 +9,7 @@ public class PlayerMovement : NetworkBehaviour
 {
     private Rigidbody _rb;
 
-    public float PlayerSpeed = 5f;
+    public float PlayerSpeed = 50f;
     public Camera Camera;
 
     public override void Spawned()
@@ -36,7 +36,6 @@ public class PlayerMovement : NetworkBehaviour
 
         Vector3 moveDir = (camForward * JoyStickMovement.JoyStickPositionY +
                            camRight   * JoyStickMovement.JoyStickPositionX).normalized;
-
         Vector3 targetVelocity = moveDir * PlayerSpeed;
         Vector3 velocityChange = targetVelocity - new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
 
