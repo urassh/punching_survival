@@ -14,7 +14,16 @@ public class LobbyNetwork : INetworkRunnerCallbacks
     {
         this.runner = runner;
         runner.AddCallbacks(this);
-        runner.JoinSessionLobby(SessionLobby.Shared);
+        
+        // セッションロビーへの接続を試行
+        try
+        {
+            runner.JoinSessionLobby(SessionLobby.Shared);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"セッションロビーへの接続に失敗しました: {e.Message}");
+        }
     }
 
     public async void CreateRoom(string roomNumber)
@@ -24,7 +33,7 @@ public class LobbyNetwork : INetworkRunnerCallbacks
         var result = await runner.StartGame(new StartGameArgs
         {
             SessionName = roomNumber,
-            GameMode = GameMode.Shared,
+            GameMode = GameMode.Host,
             Scene = Scene.Lobby.GetSceneRef(),
             SceneManager = runner.gameObject.GetComponent<NetworkSceneManagerDefault>()
         });
@@ -40,7 +49,7 @@ public class LobbyNetwork : INetworkRunnerCallbacks
         var result = await runner.StartGame(new StartGameArgs
         {
             SessionName = roomNumber,
-            GameMode = GameMode.Shared,
+            GameMode = GameMode.Client,
             Scene = Scene.Lobby.GetSceneRef(),
             SceneManager = runner.gameObject.GetComponent<NetworkSceneManagerDefault>()
         });
@@ -78,13 +87,22 @@ public class LobbyNetwork : INetworkRunnerCallbacks
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) {}
 
-    public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) {}
+    public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) 
+    {
+        Debug.Log($"NetworkRunner がシャットダウンしました: {shutdownReason}");
+    }
 
-    public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) {}
+    public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) 
+    {
+        Debug.LogError($"サーバーから切断されました: {reason}");
+    }
 
     public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) {}
 
-    public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) {}
+    public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) 
+    {
+        Debug.LogError($"接続に失敗しました: {reason}");
+    }
 
     public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) {}
 
