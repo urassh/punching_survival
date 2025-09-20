@@ -37,25 +37,26 @@ public class Play : MonoBehaviour
 	private void OnLoadedPlayScene(NetworkRunner runner)
 	{
 		SpawnAllPlayers(runner);
-		//PlayerInfoをFind
-		PlayerInfo playerInfo = FindObjectOfType<PlayerInfo>();
-		//全プレイヤー情報をRankingに登録
-		Ranking ranking = FindObjectOfType<Ranking>();
-		for (int i = 0; i < playerInfo.PlayerCount; i++)
+		// スタークライアントだけが、ランキング登録処理を実行する
+		// runner.IsSharedModeMasterClient は、マスタークライアントでのみtrueを返す
+		if (runner.IsSharedModeMasterClient)
 		{
-			ranking.RPC_RegisterPlayer(playerInfo.PlayerIds[i].ToString(), playerInfo.PlayerNames[i].ToString());
+			//PlayerInfoをFind
+			PlayerInfo playerInfo = FindObjectOfType<PlayerInfo>();
+			//全プレイヤー情報をRankingに登録
+			Ranking ranking = FindObjectOfType<Ranking>();
+			for (int i = 0; i < playerInfo.PlayerCount; i++)
+			{
+				ranking.RPC_RegisterPlayer(playerInfo.PlayerIds[i].ToString(), playerInfo.PlayerNames[i].ToString());
+			}
 		}
 	}
 	
-	/// <summary>
-    /// 現在セッションに参加している全プレイヤーのキャラクターを生成する
-    /// </summary>
     private void SpawnAllPlayers(NetworkRunner runner)
     {
-        // Runner.ActivePlayers には、現在接続している全プレイヤーのPlayerRefが含まれている
         foreach (PlayerRef player in runner.ActivePlayers)
         {
-            // 自分自身のキャラクターだけを、自分の手で生成する
+            // 自分自身のキャラクターだけを生成する
             if (player == runner.LocalPlayer)
             {
                 runner.Spawn(playerPrefab, Vector3.zero, Quaternion.identity, player);

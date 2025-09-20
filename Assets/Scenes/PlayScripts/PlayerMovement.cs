@@ -14,7 +14,22 @@ public class PlayerMovement : NetworkBehaviour
 
     [SerializeField] private float PlayerSpeed = 50f;
     [SerializeField] private Camera Camera;
-	Animator anim;
+	private Animator anim;
+	[Networked] private TickTimer KnockbackTimer { get; set; }
+	[SerializeField] private float freezeTime = 2f; 
+
+    private void OnCollisionEnter(Collision collision)
+	{
+		Debug.Log("Player OnCollisionEnter");
+		// "Bullet" タグを持つオブジェクトに衝突した場合
+		if (collision.gameObject.CompareTag("Bullet"))
+		{
+			Debug.Log("Player is hit by a Bullet");
+			Debug.Log(Runner);
+			KnockbackTimer = TickTimer.CreateFromSeconds(Runner, freezeTime);
+			Debug.Log($"KnockbackTimer:{KnockbackTimer}");
+		}
+	}
 
     public override void Spawned()
 	{
@@ -39,6 +54,25 @@ public class PlayerMovement : NetworkBehaviour
 
 	public override void FixedUpdateNetwork()
 	{
+		if (transform.position.y < -10)
+		{
+			Debug.Log("Died");
+			//Objectを消す
+			Runner.Despawn(Object);
+			//Playerカメラを特定の位置に切り替える
+			Camera.transform.position = new Vector3(0, 20, 0);
+			Camera.transform.LookAt(new Vector3(0, 0, 0));
+			GameObject.Find("UICanvas").SetActive(false);
+			string playerId = PlayerPrefs.GetString(PlayerId.playerIdKey);
+			Ranking ranking = FindObjectOfType<Ranking>();
+			ranking.RPC_SetDropPlayerRank(playerId);
+		}
+		// ノックバックタイマーが作動中なら、移動処理をすべてスキップ
+		if (KnockbackTimer.ExpiredOrNotRunning(Runner) == false)
+		{
+			return;
+		}
+
 		Quaternion cameraRotationY = Quaternion.Euler(0, Camera.transform.rotation.eulerAngles.y, 0);
 		Vector3 camForward = cameraRotationY * Vector3.forward;
 		Vector3 camRight = cameraRotationY * Vector3.right;
@@ -49,23 +83,9 @@ public class PlayerMovement : NetworkBehaviour
 
 		anim.SetFloat("Speed", targetVelocity.magnitude, 0.1f, Runner.DeltaTime);
 		Vector3 velocityChange = targetVelocity - new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
-		Debug.Log(moveDir);
 		_rb.AddForce(new Vector3(velocityChange.x, 0, velocityChange.z), ForceMode.VelocityChange);
 
 		if (moveDir != Vector3.zero)
 			transform.forward = moveDir;
-		if (transform.position.y < -10)
-		{
-			Debug.Log("Died");
-			//Objectを消す
-			Destroy(this.gameObject);
-			//Playerカメラを特定の位置に切り替える
-			Camera.transform.position = new Vector3(0, 20, 0);
-			Camera.transform.LookAt(new Vector3(0, 0, 0));
-			GameObject.Find("UICanvas").SetActive(false);
-			string playerId = PlayerPrefs.GetString(PlayerId.playerIdKey);
-			Ranking ranking = FindObjectOfType<Ranking>();
-			ranking.RPC_SetDropPlayerRank(playerId);
-		}
     }
 }

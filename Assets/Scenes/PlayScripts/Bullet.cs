@@ -7,9 +7,9 @@ using Fusion.Addons.Physics;
 [RequireComponent(typeof(Rigidbody))]
 public class Bullet : NetworkBehaviour
 {
-    public float BulletSpeed = 10f;
-    public float LifeTime = 5f;
-    public float KnockbackForce = 100f;
+    [SerializeField] float BulletSpeed = 10f;
+    [SerializeField] float LifeTime = 5f;
+    [SerializeField] float KnockbackForce = 3000f;
 
     private float _lifeTimer;
     private Rigidbody _rigidbody;
@@ -37,8 +37,7 @@ public class Bullet : NetworkBehaviour
     /// </summary>
     public override void FixedUpdateNetwork()
     {
-		Debug.Log($"FixedUpdateNetwork is running on object {Object.Id}. Timer: {_lifeTimer}");
-        // 時間経過で消滅する処理
+		// 時間経過で消滅する処理
 		_lifeTimer -= Runner.DeltaTime;
         if (_lifeTimer <= 0)
         {
@@ -57,12 +56,11 @@ public class Bullet : NetworkBehaviour
     private void OnCollisionEnter(Collision collision)
     {
 		Debug.Log("OnCollisionEnter");
-        // 衝突相手に力を加える処理
-		var targetRigidbody = collision.gameObject.GetComponent<Rigidbody>();
-        if (targetRigidbody != null && targetRigidbody != _rigidbody)
-        {
-            Vector3 dir = (collision.transform.position - transform.position).normalized;
-            targetRigidbody.AddForce(dir * KnockbackForce, ForceMode.Impulse);
+		// 衝突相手に力を加える処理
+		if (collision.gameObject.TryGetComponent<Rigidbody>(out var targetRigidbody))
+		{
+			Vector3 dir = (collision.transform.position - transform.position).normalized;
+			targetRigidbody.AddForce(dir * KnockbackForce, ForceMode.Impulse);
         }
 
         // 衝突したら自身は消滅する

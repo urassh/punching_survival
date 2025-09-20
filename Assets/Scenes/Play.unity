@@ -512,8 +512,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Target: {fileID: 5293734298677235986, guid: 691234c554d0c4894b242cf6b460ac36, type: 3}
-  offset: {x: 0, y: 4, z: -5}
-  smoothSpeed: 5
+  Distance: 5
+  LookAtOffset: {x: 0, y: 1.5, z: 0}
 --- !u!1001 &1484491896
 PrefabInstance:
   m_ObjectHideFlags: 0
