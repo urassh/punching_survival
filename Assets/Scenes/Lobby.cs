@@ -7,6 +7,7 @@ public class Lobby : MonoBehaviour
     public RoomNumberText roomNumberText;
     public GameObject connectedUI;
     public GameObject connectingUI;
+    public NetworkObject playerPrefab;
     private LobbyNetwork lobbyNetwork;
     private int roomNumber;
 
@@ -24,6 +25,7 @@ public class Lobby : MonoBehaviour
 
         lobbyNetwork = new(runner);
         lobbyNetwork.OnConnectedCallback += OnConnected;
+        lobbyNetwork.PlayerPrefab = playerPrefab;
         roomNumber = CreateRoomNum();
 
         Debug.Log($"ルーム番号 {roomNumber} でルーム作成を開始します");

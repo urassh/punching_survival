@@ -9,7 +9,8 @@ public class LobbyNetwork : INetworkRunnerCallbacks
 {
     private List<SessionInfo> cachedSessionList = new();
     private readonly NetworkRunner runner;
-    public Action<NetworkRunner> OnConnectedCallback { get; set; } 
+    public Action<NetworkRunner> OnConnectedCallback { get; set; }
+    public NetworkObject PlayerPrefab { get; set; } // プレイヤープレハブの参照 
 
     public LobbyNetwork(NetworkRunner runner)
     {
@@ -159,7 +160,6 @@ public class LobbyNetwork : INetworkRunnerCallbacks
     public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) {}
 
     public void OnSceneLoadDone(NetworkRunner runner) {}
-    
 
     public void OnSceneLoadStart(NetworkRunner runner) {}
 }
