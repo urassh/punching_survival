@@ -1,43 +1,117 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using Fusion;
 using UnityEngine;
 
-public class Ranking : MonoBehaviour
+/// <summary>
+/// プレイヤーのランキング情報を管理するデータ構造
+/// Rank = 0: 生存中, Rank > 0: 脱落済み（順位）
+/// </summary>
+[System.Serializable]
+public struct PlayerRankingData : INetworkStruct
 {
-    Dictionary<int, string> playerNames = new Dictionary<int, string>();
+        [Networked] public NetworkString<_16> PlayerId { get; set; }
+        [Networked] public NetworkString<_32> PlayerName { get; set; }
+        [Networked] public int Rank { get; set; }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+        public PlayerRankingData(string id, string name)
+        {
+            PlayerId = id;
+            PlayerName = name;
+            Rank = 0;
+        }
+}
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    void Awake()
+/// <summary>
+/// 2~4人プレイゲームのランキング機能を管理するクラス
+/// DontDestroyOnLoadによりシーン間で共有される
+/// </summary>
+public class Ranking : NetworkBehaviour
+{
+    private Dictionary<string, PlayerRankingData> playerData = new Dictionary<string, PlayerRankingData>();
+    private void Awake()
     {
         DontDestroyOnLoad(this.gameObject);
     }
 
-    void RPC_RegisterPlayer(int playerId, string playerName)
+
+    /// <summary>
+    /// プレイヤーをランキングに登録（RPC版）
+    /// </summary>
+    /// <param name="playerId">プレイヤーID</param>
+    /// <param name="playerName">プレイヤー名</param>
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void RPC_RegisterPlayer(string playerId, string playerName)
     {
-        playerNames[playerId] = playerName;
+        if (!playerData.ContainsKey(playerId))
+        {
+            playerData[playerId] = new PlayerRankingData(playerId, playerName);
+        }
     }
 
-    void RPC_SetDropPlayerRank(string playerId)
+    /// <summary>
+    /// 生存中（Rank = 0）のプレイヤー数を取得
+    /// </summary>
+    public int GetSurvivingPlayersCount()
     {
-
+        return playerData.Values.Count(p => p.Rank == 0);
     }
-    void RPC_SetSurvivedPlayerRank(string playerId)
+
+    /// <summary>
+    /// プレイヤーを脱落ランクに設定（RPC版）
+    /// </summary>
+    /// <param name="playerId">脱落したプレイヤーのID</param>
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void RPC_SetDropPlayerRank(string playerId)
     {
-
-    } 
-
-    void RPC_ResetRanking()
-    {
-
+        if (playerData.ContainsKey(playerId))
+        {
+            var player = playerData[playerId];
+            player.Rank = GetSurvivingPlayersCount() + 1; // 脱落ランクを設定
+            playerData[playerId] = player;
+        }
     }
+
+    /// <summary>
+    /// プレイヤーを生存者ランク（1位）に設定（RPC版）
+    /// </summary>
+    /// <param name="playerId">生存したプレイヤーのID</param>
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void RPC_SetSurvivedPlayerRank(string playerId)
+    {
+        if (playerData.ContainsKey(playerId))
+        {
+            var player = playerData[playerId];
+            player.Rank = 1; // 1位
+            playerData[playerId] = player;
+        }
+    }
+
+    /// <summary>
+    /// 現在のランキングリストを取得
+    /// </summary>
+    /// <returns>ランキングリスト</returns>
+    public List<PlayerRankingData> GetRankingList()
+    {
+        /// ダミーのランキングリスト
+        /// uuid(String), name, rank
+        List<PlayerRankingData> dummyList = new List<PlayerRankingData>
+        {
+            new(System.Guid.NewGuid().ToString(), "うらっしゅ") { Rank = 2 },
+            new(System.Guid.NewGuid().ToString(), "じく") { Rank = 1 },
+            new(System.Guid.NewGuid().ToString(), "かわみー") { Rank = 3 },
+            new(System.Guid.NewGuid().ToString(), "はる") { Rank = 4 }
+        };
+        return dummyList;
+    }
+
+    // /// <summary>
+    // /// ランキングを順位順で取得（クライアント側用）
+    // /// </summary>
+    // public List<PlayerRankingData> GetSortedRankingList()
+    // {
+    //     return rankingList.OrderBy(p => p.Rank).ToList();
+    // }
+
 }
