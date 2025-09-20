@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 
-
 public class DisplayResult : MonoBehaviour
 {
     public GameObject score_object = null; // Textオブジェクト
