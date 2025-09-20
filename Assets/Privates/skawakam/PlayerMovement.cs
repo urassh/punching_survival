@@ -3,22 +3,29 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 using UnityEngine.TextCore.Text;
+using Unity.VisualScripting;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerMovement : NetworkBehaviour
 {
+	    // 自分自身（ローカルプレイヤー）のインスタンスを保持するstatic変数
+    public static PlayerMovement Local { get; private set; }
     private Rigidbody _rb;
 
-    public float PlayerSpeed = 50f;
-    public Camera Camera;
+    [SerializeField] private float PlayerSpeed = 50f;
+    [SerializeField] private Camera Camera;
 
     public override void Spawned()
     {
+		if (HasInputAuthority)
+		{
+			Local = this; // static変数に自分を登録
+		}
         if (HasStateAuthority)
-        {
-            Camera = Camera.main;
-            Camera.GetComponent<FirstPersonCamera>().Target = transform;
-        }
+		{
+			Camera = Camera.main;
+			Camera.GetComponent<FirstPersonCamera>().Target = transform;
+		}
     }
 
     private void Awake()
@@ -29,7 +36,12 @@ public class PlayerMovement : NetworkBehaviour
     }
 
     public override void FixedUpdateNetwork()
-    {
+    {	
+		if (!HasInputAuthority)
+		{
+			return;
+		}
+
         Quaternion cameraRotationY = Quaternion.Euler(0, Camera.transform.rotation.eulerAngles.y, 0);
         Vector3 camForward = cameraRotationY * Vector3.forward;
         Vector3 camRight   = cameraRotationY * Vector3.right;
