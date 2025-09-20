@@ -45,11 +45,14 @@ public class LobbyNetwork : INetworkRunnerCallbacks
         else
         {
             Debug.LogError($"ルーム作成に失敗しました: {result.ErrorMessage}");
+            throw new Exception($"ルーム作成に失敗しました: {result.ErrorMessage}");
         }
     }
 
     public async Task JoinRoom(string roomNumber)
     {
+        await runner.JoinSessionLobby(SessionLobby.Shared);
+
         if (runner == null || !IsExistRoom(roomNumber)) return;
 
         // 既に接続されている場合は一度シャットダウン
@@ -144,7 +147,7 @@ public class LobbyNetwork : INetworkRunnerCallbacks
     {
         Debug.Log("サーバーに接続されました");
         Debug.Log($"IsSharedModeMasterClient: {runner.IsSharedModeMasterClient}");
-        
+
         // コールバック関数が設定されている場合は実行
         OnConnectedCallback?.Invoke(runner);
     }

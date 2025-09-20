@@ -25,7 +25,7 @@ public class Lobby : MonoBehaviour
 
         lobbyNetwork = new(runner);
         lobbyNetwork.OnConnectedCallback += OnConnected;
-        roomNumber = CreateRoomNum();
+        roomNumber = Random.Range(1000, 10000);
 
         Debug.Log($"ルーム番号 {roomNumber} でルーム作成を開始します");
         lobbyNetwork.CreateRoom(roomNumber.ToString());
@@ -60,10 +60,5 @@ public class Lobby : MonoBehaviour
             connectingUI.SetActive(false);
             roomNumberText.SetRoomNumber(roomNumber);
         }
-    }
-
-    private int CreateRoomNum()
-    {
-        return Random.Range(1000, 10000);
     }
 }
