@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using Fusion;
-using System.Threading.Tasks;
 
 public class Lobby : MonoBehaviour
 {
@@ -22,7 +18,7 @@ public class Lobby : MonoBehaviour
             lobbyNetwork = new(runner);
             int roomNumber = CreateRoomNum();
 
-            // ゲーム終了まで保持する
+            // ゲーム終了まで保持する(キャンセル時は削除される)
             DontDestroyOnLoad(runner.gameObject);
             if (roomNumberText != null)
                 roomNumberText.SetRoomNumber(roomNumber);
@@ -33,7 +29,11 @@ public class Lobby : MonoBehaviour
 
     public void OnInputStart()
     {
-        
+        NetworkRunner runner = FindObjectOfType<NetworkRunner>();
+
+        Debug.Log("LOAD START");
+        Debug.Log("runner.IsSharedModeMasterClient: " + runner.IsSharedModeMasterClient);
+        Scene.Play.LoadScene(runner);
     }
 
     public void OnInputCancel()
@@ -43,7 +43,7 @@ public class Lobby : MonoBehaviour
         NetworkRunner runner = FindObjectOfType<NetworkRunner>();
         if (runner != null)
             Destroy(runner.gameObject);
-        
+
         Scene.Start.LoadScene();
     }
 
