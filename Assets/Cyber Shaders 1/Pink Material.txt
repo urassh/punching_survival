@@ -1,0 +1,25 @@
+
+...........................[FAQ] PINK material issue?................................
+
+> How to avoid "pink material" (3D models/prefabs showing pink material only) for this asset?
+
+.......[Solution -1]..........
+
+- Make sure you are using UNITY's version, which support's shadergraph for Built-in, URP and other render pipelines (This asset is submitted using Unity 2021.3.24f1).
+
+.......[Solution -2]..........
+
+- Install Shadergraph 12.1.11 or Newer version from the Package Manager.
+(To install "Shadergraph", go to Windows > Package manager > [Packages : Unity Registry] > Shader Graph.)
+
+.......[Solution -3]..........
+
+1 - Go to this Asset's shadergraph folder (ex: Assets > [Asset name] > Shadergraph)
+
+2 - Double click and open the Shadergraph file (Assets may have 1 or more shadergraph file, so repeat the below steps for each file)
+
+3 - Go to "Graph inspector" tab > Graph settings
+
+4 - Add the Active targets [+] that you want (If you are using built-in render pipeline, Add the active targets as built-in render pipeline).Done.
+
+Contact: srstudioskerala@gmail.com

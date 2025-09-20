@@ -1,0 +1,57 @@
+Custom Shader Properties – Unity Shader Graph
+
+Overview:
+This shader supports three customizable black-and-white texture inputs:
+- Background Texture (BG Texture)
+- Pattern 1 (P1 Texture)
+- Pattern 2 (P2 Texture)
+- All textures must be in a 1:1 aspect ratio.
+
+BG Texture
+- A black-and-white texture used as the base layer.
+- Must be square (1:1 aspect ratio) to avoid distortion.
+- BG1 Color1 and BG1 Color2:
+  - Color1 fills the white areas of the texture.
+  - Color2 fills the black areas of the texture.
+  - This lets you recolor the grayscale texture dynamically.
+- Tiling and Offset Animation:
+  - Supports scrolling animation using Animation_X and Animation_Y.
+  - Set both to 0 for no animation.
+  - Used for effects like moving backgrounds or scanning lines.
+
+Twirl Strength
+- Applies a twirl distortion effect to BG, P1, and P2.
+- Twirl can be toggled on or off individually for Pattern 1 and Pattern 2.
+- Useful for creating warped or animated swirl effects.
+
+Posterize
+- Applies a posterization effect (reduces color levels) to BG, P1, and P2.
+- Helps create stylized visuals like comic or retro looks.
+
+Noise Effects
+- Adds displacement and distortion using a noise texture.
+- Affects BG, P1, and P2 using:
+  - Noise Scale
+  - Noise Strength
+  - Noise Tile
+  - Noise Speed
+- To apply noise distortion on Pattern 1 and Pattern 2, turn on "Twirl on P1" and "Twirl on P2".
+- Great for glitchy, fluid, or wavy distortion effects.
+
+Hue Adjustment
+- Can be enabled or disabled.
+- Applies hue shift to the overall shader output.
+- Useful for color variation or animated color changes.
+
+Pattern 1 (P1) and Pattern 2 (P2)
+- Optional overlay textures, black-and-white only.
+- Each supports:
+  - Opacity adjustment
+  - Scale control
+  - Animation via offset
+- Ideal for adding extra details like grids, symbols, or sci-fi overlays.
+
+General Notes:
+- All three textures (BG, P1, P2) must be black-and-white and 1:1 ratio.
+- Set Animation_X and Animation_Y to 0 for no movement.
+- Noise and Twirl effects on P1 and P2 require toggling them on manually.
