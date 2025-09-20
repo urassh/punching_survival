@@ -4,9 +4,13 @@ using UnityEngine.UI;
 
 public class LobbyJoin : MonoBehaviour
 {
-    public InputField roomNumberInput;
+    [SerializeField] private InputField roomNumberInput;
+    [SerializeField] private Button joinButton;
     public NetworkRunner runnerPrefab;
     private LobbyNetwork lobbyNetwork;
+    
+    [SerializeField] private Color enabledColor = Color.white;
+    [SerializeField] private Color disabledColor = Color.gray;
 
     void Start()
     {
@@ -14,6 +18,20 @@ public class LobbyJoin : MonoBehaviour
         NetworkRunner runner = Instantiate(runnerPrefab);
         DontDestroyOnLoad(runner.gameObject);
         lobbyNetwork = new(runner);
+        
+        // 初期状態ではボタンを無効化
+        SetButtonState(joinButton, false);
+    }
+
+    public void OnInputRoomNumber()
+    {
+        bool isValidRoomNumber = IsValidRoomNumber(roomNumberInput.text);
+        SetButtonState(joinButton, isValidRoomNumber);
+    }
+    
+    private bool IsValidRoomNumber(string roomNumber)
+    {
+        return roomNumber.Length == 4 && int.TryParse(roomNumber, out _);
     }
 
     public async void OnInputJoin()
@@ -37,5 +55,18 @@ public class LobbyJoin : MonoBehaviour
             Destroy(runner.gameObject);
 
         Scene.Start.LoadScene();
+    }
+
+    private void SetButtonState(Button button, bool isEnabled)
+    {
+        button.enabled = isEnabled;
+
+        ColorBlock colorBlock = button.colors;
+        colorBlock.normalColor = isEnabled ? enabledColor : disabledColor;
+        colorBlock.highlightedColor = isEnabled ? enabledColor : disabledColor;
+        colorBlock.pressedColor = isEnabled ? enabledColor : disabledColor;
+        colorBlock.selectedColor = isEnabled ? enabledColor : disabledColor;
+        colorBlock.disabledColor = disabledColor;
+        button.colors = colorBlock;
     }
 } 
