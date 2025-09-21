@@ -11,8 +11,13 @@ public class PlayerTexts : MonoBehaviour
     public Text player2Text;
     public Text player3Text;
     public Text player4Text;
+    public GameObject player1Model;
+    public GameObject player2Model;
+    public GameObject player3Model;
+    public GameObject player4Model;
     
     private Text[] playerTexts;
+    private GameObject[] playerModels;
     private PlayerInfo playerInfo;
     private Coroutine updateCoroutine;
     
@@ -20,7 +25,7 @@ public class PlayerTexts : MonoBehaviour
     {
         // プレイヤーテキストの配列を初期化
         playerTexts = new Text[] { player1Text, player2Text, player3Text, player4Text };
-        
+        playerModels = new GameObject[] { player1Model, player2Model, player3Model, player4Model };
         // 全てのテキストを初期状態では非アクティブにする
         foreach (var text in playerTexts)
         {
@@ -85,6 +90,7 @@ public class PlayerTexts : MonoBehaviour
             {
                 // プレイヤーが存在する場合：テキストをアクティブにして名前を表示
                 playerTexts[i].gameObject.SetActive(true);
+                playerModels[i].SetActive(true);
                 playerTexts[i].text = $"{i + 1}. {players[i].playerName}";
                 Debug.Log($"Player{i + 1}Text updated: {players[i].playerName}");
             }
