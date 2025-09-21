@@ -9,6 +9,7 @@ public class Lobby : MonoBehaviour
     public RoomNumberText roomNumberText;
     public GameObject connectedUI;
     public GameObject connectingUI;
+    public GameObject startButton;
     public NetworkObject playerInfoPrefab;
     public PlayerTexts playerTexts;
     private LobbyNetwork lobbyNetwork;
@@ -82,6 +83,8 @@ public class Lobby : MonoBehaviour
             connectingUI.SetActive(false);
             roomNumberText.SetRoomNumber(roomNumber);
             playerTexts.ActivatePlayerTexts();
+            if (!runner.IsSharedModeMasterClient)
+                startButton.SetActive(false);
         }
 
         runner.Spawn(playerInfoPrefab, Vector3.zero, Quaternion.identity);

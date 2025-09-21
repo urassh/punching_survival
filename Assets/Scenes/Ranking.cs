@@ -25,12 +25,14 @@ public struct PlayerRankingData : INetworkStruct
 
 /// <summary>
 /// 2~4人プレイゲームのランキング機能を管理するクラス
-/// DontDestroyOnLoadによりシーン間で共有される
+/// NetworkObjectとして動的にスポーンされる
 /// </summary>
 public class Ranking : NetworkBehaviour
 {
-    private Dictionary<string, PlayerRankingData> playerData = new Dictionary<string, PlayerRankingData>();    public static Ranking Instance { get; private set; }
-    private void Awake()
+    private Dictionary<string, PlayerRankingData> playerData = new Dictionary<string, PlayerRankingData>();
+    public static Ranking Instance { get; private set; }
+
+    public override void Spawned()
     {
         if (Instance == null)
         {
@@ -39,7 +41,8 @@ public class Ranking : NetworkBehaviour
         }
         else
         {
-            Destroy(gameObject);
+            // 既にインスタンスが存在する場合は削除
+            Runner.Despawn(Object);
         }
     }
     /// <summary>
