@@ -37,7 +37,6 @@ public class ThirdPersonCamera : MonoBehaviour
     {
         if (Target == null || !SystemInfo.supportsGyroscope)
         {
-            transform.LookAt(Target.position + LookAtOffset);
             return;
         }
 
