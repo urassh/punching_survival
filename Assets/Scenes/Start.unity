@@ -2442,6 +2442,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1381618972598308654}
+  - component: {fileID: 1758567204839347605}
   m_Layer: 0
   m_Name: 3D_modeling_green
   m_TagString: Untagged
@@ -2449,6 +2450,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1758567204839347605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1758567204839347604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3801cc54f53cc14891f88cb7a566072, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1774806730686293962
 Transform:
   m_ObjectHideFlags: 0
