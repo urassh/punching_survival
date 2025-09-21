@@ -7,9 +7,13 @@ public class PushGestureHandler : MonoBehaviour
     public float PushThreshold = 1.5f;
     public float CooldownTime = 1.0f;
     private float _cooldownTimer;
+    // 銃声のオブジェクトをとる
+    [SerializeField] public AudioSource gunShotSoundSource;
+    [SerializeField] public AudioClip gunShotSoundClip;
 
     void Update()
     {
+
         // クールダウンタイマーを減らす
         if (_cooldownTimer > 0)
         {
@@ -48,6 +52,8 @@ public class PushGestureHandler : MonoBehaviour
             BulletSpawner spawner = PlayerMovement.Local.GetComponent<BulletSpawner>();
             if (spawner != null)
             {
+                //銃弾の音を鳴らす
+                gunShotSoundSource.PlayOneShot(gunShotSoundClip);
                 // そのFire()メソッドを呼び出す
                 spawner.Fire();
             }
