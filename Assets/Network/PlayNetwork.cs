@@ -72,14 +72,6 @@ public class PlayNetwork : INetworkRunnerCallbacks
         
         Debug.Log("シーンロード2が完了しました");
         // ネットワークオブジェクトの初期化を待つため、少し遅延させる
-        runner.StartCoroutine(DelayedCallback(runner));
-    }
-    
-    private System.Collections.IEnumerator DelayedCallback(NetworkRunner runner)
-    {
-        // 数フレーム待ってからコールバックを呼び出す
-        yield return null;
-        yield return null;
         OnLoadedSceneCallback?.Invoke(runner);
     }
 
