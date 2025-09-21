@@ -4,6 +4,7 @@ using UnityEngine;
 using Fusion;
 using UnityEngine.TextCore.Text;
 using Unity.VisualScripting;
+using DG.Tweening;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerMovement : NetworkBehaviour
@@ -15,8 +16,12 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField] private float PlayerSpeed = 50f;
     [SerializeField] private Camera Camera;
 	private Animator anim;
-	[Networked] private TickTimer KnockbackTimer { get; set; }
-	[SerializeField] private float freezeTime = 2f; 
+	[SerializeField] private float freezeTime = 2f;
+	
+	// ノックバック関連の変数
+	[SerializeField] private float knockbackForce = 15f;
+	[SerializeField] private float knockbackDuration = 0.5f;
+	private bool isKnockedBack = false; 
 
     private void OnCollisionEnter(Collision collision)
 	{
@@ -26,8 +31,6 @@ public class PlayerMovement : NetworkBehaviour
 		{
 			Debug.Log("Player is hit by a Bullet");
 			Debug.Log(Runner);
-			KnockbackTimer = TickTimer.CreateFromSeconds(Runner, freezeTime);
-			Debug.Log($"KnockbackTimer:{KnockbackTimer}");
 		}
 	}
 
@@ -67,8 +70,9 @@ public class PlayerMovement : NetworkBehaviour
 			Ranking ranking = FindObjectOfType<Ranking>();
 			ranking.RPC_SetDropPlayerRank(playerId);
 		}
-		// ノックバックタイマーが作動中なら、移動処理をすべてスキップ
-		if (KnockbackTimer.ExpiredOrNotRunning(Runner) == false)
+
+		// ノックバック中は通常の移動処理をスキップ
+		if (isKnockedBack)
 		{
 			return;
 		}
@@ -88,4 +92,45 @@ public class PlayerMovement : NetworkBehaviour
 		if (moveDir != Vector3.zero)
 			transform.forward = moveDir;
     }
+
+	/// <summary>
+	/// ノックバック処理（弾丸から呼び出される）
+	/// </summary>
+	public void ApplyKnockback(Vector3 knockbackDirection)
+	{
+		// ネットワークオブジェクトの場合、RPCを使用してノックバックを同期
+		if (Object != null && Object.HasStateAuthority)
+		{
+			RPC_ApplyKnockback(knockbackDirection);
+		}
+	}
+
+	/// <summary>
+	/// ネットワーク同期されたノックバック処理
+	/// </summary>
+	[Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+	private void RPC_ApplyKnockback(Vector3 knockbackDirection)
+	{
+		// 既にノックバック中の場合は処理しない
+		if (isKnockedBack) return;
+
+		isKnockedBack = true;
+
+		// ノックバック方向を水平面に制限（Y軸は0にする）
+		Vector3 horizontalKnockback = new Vector3(knockbackDirection.x, 0, knockbackDirection.z).normalized;
+
+		// 現在位置から目標位置を計算
+		Vector3 startPosition = transform.position;
+		Vector3 targetPosition = startPosition + horizontalKnockback * knockbackForce;
+
+		// DoTweenを使用してスムーズなノックバック移動
+		transform.DOMove(targetPosition, knockbackDuration)
+			.SetEase(Ease.OutCubic)
+			.OnComplete(() => {
+				isKnockedBack = false;
+			});
+
+		// ノックバック中のアニメーション
+		anim.SetFloat("Speed", 0f);
+	}
 }

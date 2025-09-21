@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 using Fusion.Addons.Physics;
+using DG.Tweening;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Bullet : NetworkBehaviour
 {
     [SerializeField] float BulletSpeed = 10f;
     [SerializeField] float LifeTime = 5f;
-    [SerializeField] float KnockbackForce = 3000f;
 
     private float _lifeTimer;
     private Rigidbody _rigidbody;
@@ -29,7 +29,8 @@ public class Bullet : NetworkBehaviour
 
         // ▼▼▼ ここで初速を与える ▼▼▼
         // この弾は、自身の前方に、設定された速度で飛んでいく
-        _rigidbody.AddForce(transform.forward * BulletSpeed, ForceMode.VelocityChange);
+        // x軸90度回転を考慮して、本来の前方向（transform.up）を使用
+        _rigidbody.AddForce(transform.up * BulletSpeed, ForceMode.VelocityChange);
     }
 
     /// <summary>
@@ -37,16 +38,16 @@ public class Bullet : NetworkBehaviour
     /// </summary>
     public override void FixedUpdateNetwork()
     {
-		// 時間経過で消滅する処理
-		_lifeTimer -= Runner.DeltaTime;
+        // 時間経過で消滅する処理
+        _lifeTimer -= Runner.DeltaTime;
         if (_lifeTimer <= 0)
         {
-			Debug.Log("Bullet will Despawn");
+            Debug.Log("Bullet will Despawn");
             // オブジェクトが有効な場合のみDespawnを呼ぶ
-			if (Object != null && Object.IsValid)
-			{
-				Runner.Despawn(Object);
-			}
+            if (Object != null && Object.IsValid)
+            {
+                Runner.Despawn(Object);
+            }
         }
     }
 
@@ -55,12 +56,15 @@ public class Bullet : NetworkBehaviour
     /// </summary>
     private void OnCollisionEnter(Collision collision)
     {
-		Debug.Log("OnCollisionEnter");
-		// 衝突相手に力を加える処理
-		if (collision.gameObject.TryGetComponent<Rigidbody>(out var targetRigidbody))
-		{
-			Vector3 dir = (collision.transform.position - transform.position).normalized;
-			targetRigidbody.AddForce(dir * KnockbackForce, ForceMode.Impulse);
+        // プレイヤーに衝突した場合はノックバック処理を実行
+        PlayerMovement player = collision.gameObject.GetComponent<PlayerMovement>();
+        if (player != null)
+        {
+            // 弾の移動方向を取得（ノックバック方向として使用）
+            Vector3 knockbackDirection = transform.up.normalized;
+            
+            // プレイヤーにノックバックを適用
+            player.ApplyKnockback(knockbackDirection);
         }
 
         // 衝突したら自身は消滅する

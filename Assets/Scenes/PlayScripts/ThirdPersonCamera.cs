@@ -6,7 +6,7 @@ public class ThirdPersonCamera : MonoBehaviour
 {
     public Transform Target;
 	public float Distance = 8.0f;
-	public Vector3 LookAtOffset = new Vector3(0, 6f, 0);
+	public Vector3 LookAtOffset = new(0, 6f, 0);
 
 	// ジャイロの基準となる回転をリセットするためのオフセット
     private Quaternion _gyroOffset = Quaternion.identity;

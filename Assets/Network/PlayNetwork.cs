@@ -69,7 +69,9 @@ public class PlayNetwork : INetworkRunnerCallbacks
     public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) {}
     public void OnSceneLoadDone(NetworkRunner runner)
     {
+        
         Debug.Log("シーンロード2が完了しました");
+        // ネットワークオブジェクトの初期化を待つため、少し遅延させる
         OnLoadedSceneCallback?.Invoke(runner);
     }
 
