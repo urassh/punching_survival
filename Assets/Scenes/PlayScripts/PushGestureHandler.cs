@@ -10,6 +10,13 @@ public class PushGestureHandler : MonoBehaviour
     // 銃声のオブジェクトをとる
     [SerializeField] public AudioSource gunShotSoundSource;
     [SerializeField] public AudioClip gunShotSoundClip;
+    private Animator anim;
+
+    void Start()
+    {
+        _cooldownTimer = 0;
+        anim = GetComponent<Animator>();
+    }
 
     void Update()
     {
@@ -55,6 +62,7 @@ public class PushGestureHandler : MonoBehaviour
                 //銃弾の音を鳴らす
                 // そのFire()メソッドを呼び出す
                 spawner.Fire();
+                anim.SetTrigger("Fire");
                 gunShotSoundSource.PlayOneShot(gunShotSoundClip);
             }
         }
