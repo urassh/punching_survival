@@ -53,9 +53,9 @@ public class PushGestureHandler : MonoBehaviour
             if (spawner != null)
             {
                 //銃弾の音を鳴らす
-                gunShotSoundSource.PlayOneShot(gunShotSoundClip);
                 // そのFire()メソッドを呼び出す
                 spawner.Fire();
+                gunShotSoundSource.PlayOneShot(gunShotSoundClip);
             }
         }
         else
