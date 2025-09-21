@@ -24,7 +24,7 @@ public class BulletSpawner : NetworkBehaviour
 			// 第4引数で、この弾の所有者（操作権限者）を自分に設定する
 			Runner.Spawn(BulletPrefab,
 						 FirePoint.position,
-						 FirePoint.rotation,
+						 FirePoint.rotation * Quaternion.Euler(90, 0, 0),
 						 Object.InputAuthority); // 撃ったプレイヤーが所有者となる
 		}
 	}

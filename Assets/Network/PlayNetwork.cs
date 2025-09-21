@@ -69,7 +69,17 @@ public class PlayNetwork : INetworkRunnerCallbacks
     public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) {}
     public void OnSceneLoadDone(NetworkRunner runner)
     {
+        
         Debug.Log("シーンロード2が完了しました");
+        // ネットワークオブジェクトの初期化を待つため、少し遅延させる
+        runner.StartCoroutine(DelayedCallback(runner));
+    }
+    
+    private System.Collections.IEnumerator DelayedCallback(NetworkRunner runner)
+    {
+        // 数フレーム待ってからコールバックを呼び出す
+        yield return null;
+        yield return null;
         OnLoadedSceneCallback?.Invoke(runner);
     }
 

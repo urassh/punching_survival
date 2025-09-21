@@ -29,7 +29,8 @@ public class Bullet : NetworkBehaviour
 
         // ▼▼▼ ここで初速を与える ▼▼▼
         // この弾は、自身の前方に、設定された速度で飛んでいく
-        _rigidbody.AddForce(transform.forward * BulletSpeed, ForceMode.VelocityChange);
+        // x軸90度回転を考慮して、本来の前方向（transform.up）を使用
+        _rigidbody.AddForce(transform.up * BulletSpeed, ForceMode.VelocityChange);
     }
 
     /// <summary>
