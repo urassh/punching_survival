@@ -786,7 +786,7 @@ GameObject:
   - component: {fileID: 3823968975123735269}
   - component: {fileID: 8858977362207467272}
   m_Layer: 0
-  m_Name: 3Dmodel_blue
+  m_Name: Player1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -802,7 +802,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 508683163311364404}
@@ -865,6 +865,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerSpeed: 5
   Camera: {fileID: 0}
+  freezeTime: 2
+  knockbackForce: 15
+  knockbackDuration: 0.5
 --- !u!114 &3049462679546671202
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -4,7 +4,7 @@ using Fusion;
 public class Play : MonoBehaviour
 {
     [SerializeField] private Transform[] spawnPoints;
-	public NetworkObject playerPrefab; // プレイヤープレハブの参照
+	[SerializeField] private NetworkObject[] playerPrefabs;
 	public NetworkObject rankingPrefab; // Rankingプレハブの参照
 	private PlayNetwork playNetwork;
 
@@ -90,8 +90,9 @@ public class Play : MonoBehaviour
             // プレイヤーIDに基づいてスポーンポイントを決定
             int spawnIndex = localPlayer.PlayerId % spawnPoints.Length;
             Vector3 spawnPosition = spawnPoints[spawnIndex].position;
+			NetworkObject playerPrefab = playerPrefabs[spawnIndex];
             // 0,0,0の方向を向くように設定
-            Quaternion spawnRotation = Quaternion.LookRotation(Vector3.forward);
+			Quaternion spawnRotation = Quaternion.LookRotation(Vector3.forward);
             runner.Spawn(playerPrefab, spawnPosition, spawnRotation, localPlayer);
         }
     }
