@@ -132,7 +132,6 @@ GameObject:
   m_Component:
   - component: {fileID: 118603071}
   - component: {fileID: 118603070}
-  - component: {fileID: 118603072}
   - component: {fileID: 118603073}
   m_Layer: 0
   m_Name: Play
@@ -160,9 +159,9 @@ MonoBehaviour:
   - {fileID: 1524872123}
   playerPrefabs:
   - {fileID: 6925090075186637679, guid: 691234c554d0c4894b242cf6b460ac36, type: 3}
-  - {fileID: 1209735797401407900, guid: c9459b85c72b0429d9d9dfd7fac3f905, type: 3}
-  - {fileID: -4554473803377875441, guid: a8a28aef4e53f4861a22915d282f116c, type: 3}
-  - {fileID: -5189729293240712721, guid: 080d3d052d27b4ea7844d7a3f684303e, type: 3}
+  - {fileID: 8026065359112101018, guid: 9c87e305f7c5b4f3e819ec78a7aab75d, type: 3}
+  - {fileID: 7111687271382730774, guid: 660e45de2109349b1832093e1a6503f4, type: 3}
+  - {fileID: 7464119300670851706, guid: 2bfe352d8d111432b98d38ff779af949, type: 3}
   rankingPrefab: {fileID: 7822018575809141644, guid: f8ad70467aee947b98cc42d063d16710, type: 3}
 --- !u!4 &118603071
 Transform:
@@ -179,18 +178,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &118603072
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 118603069}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e4da4c65fb8f84cbdba322f3252c5927, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &118603073
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -867,7 +854,7 @@ PrefabInstance:
     - target: {fileID: 6059364011818771803, guid: 198e948e73faa49b9942e41701b094ab, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 118603072}
+      objectReference: {fileID: 0}
     - target: {fileID: 6059364011818771803, guid: 198e948e73faa49b9942e41701b094ab, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: OnFireButtonClicked
