@@ -1,0 +1,59 @@
+
+- - - - - - - - - - - - - - - - - - - - - Animated Cyber Shaders for Background's - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+This pack contains many Scifi Cyber Shaders/Materials for games background's
+.You can also assign these materials to your own 3D gameobjects.All materials are highly customizable too.
+Adjust the properties and create your own easily.
+
+Technical Details:-
+		- Material(s) : Custom material (Made with Shadergraph v12)
+		- Materials Count : 42+
+		- Customizable : YES
+		- Model(s) : BG Plane (Portrait, Landscape)
+		- Animated Shaders : Yes
+		- Prefab Variations : 80+ (BG Plane - Portrait, Landscape)
+		- Texture Size(s) : 2048 x 2048, 1024 x 1024
+		- Shadergraph version - 12.1.11
+		- Built in support : Yes
+	
+
+Features:-
+	- Many simple Cyber style shaders
+	- Fully Customizable (You can change patterns, Colors, Hue, Adjust animations.etc)
+	- Each color's in the shader can be customizable
+	- Best fit for Futuristic, Stylized, Sci-fi Game worlds.
+	- Shaders have animation's with Customizable speed and Direction
+	- Simple BG plane added (80+ Prefabs, drag drop and use as Background)
+	- Mobile, AR supported
+	- Shader also support's for custom 3D meshes with unwrapped UV.
+	- All nodes, materials and textures are appropriately named.
+
+Folder details:-
+
+	Materials : Where the materials for the model located.
+	
+	Meshes : Contain FBX format of the 3d model.
+	
+	Textures : Contains Textures, that are in (.PNG) file format
+	
+	(Other folders - Prefabs, Scenes)
+
+Notes:
+Support URP, HDRP, LWRP, Built-in Render Pipeline.
+This project is submitted using Built-in Render Pipeline. If you are not using Built-in Render Pipeline, you need to manually reset the shader of the model to avoid it being pink
+
+How to use:-	
+	Simply drag and drop the prefab to your scene and use it.
+	(Prefab(s) located under 
+	Asset > Cyber Shaders 1 > Prefabs).
+
+How it working:- You can apply this Animated shader's/Material's to a 3D plane(Pack comes with portrait & landscape 3D plane),
+This 3D plane act as a Background for your game.
+
+....................................................................................................................
+
+About Me : "SR Studios Kerala", Indie Game developer & 3D-2D Artist from Alappuzha, Kerala, India
+
+Contact : srstudioskerala@gmail.com
+
+................Thank you for downloading this package................................
