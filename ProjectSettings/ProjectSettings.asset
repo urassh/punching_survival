@@ -758,7 +758,7 @@ PlayerSettings:
     WebGL: DOTWEEN
     Windows Store Apps: DOTWEEN
     XboxOne: DOTWEEN
-    iPhone: DOTWEEN
+    iPhone: DOTWEEN;FUSION_WEAVER;FUSION2;FUSION_LOGLEVEL_INFO
     tvOS: DOTWEEN
   additionalCompilerArguments: {}
   platformArchitecture: {}
