@@ -2,17 +2,37 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 加速度センサーで前に押し出すジェスチャーを検知して銃を撃つ
+/// オプション：無効にしてUIボタンのみでも使用可能
+/// </summary>
 public class PushGestureHandler : MonoBehaviour
 {
+    [Header("ジェスチャー設定")]
+    [SerializeField] private bool enableGesture = true; // ジェスチャー検知を有効にするか
     public float PushThreshold = 1.5f;
     public float CooldownTime = 1.0f;
     private float _cooldownTimer;
+    
+    [Header("オーディオ設定")]
     // 銃声のオブジェクトをとる
     [SerializeField] public AudioSource gunShotSoundSource;
     [SerializeField] public AudioClip gunShotSoundClip;
+    private Animator anim;
+
+    void Start()
+    {
+        _cooldownTimer = 0;
+        anim = GetComponent<Animator>();
+    }
 
     void Update()
     {
+        // ジェスチャー検知が無効なら何もしない
+        if (!enableGesture)
+        {
+            return;
+        }
 
         // クールダウンタイマーを減らす
         if (_cooldownTimer > 0)
@@ -50,11 +70,23 @@ public class PushGestureHandler : MonoBehaviour
         {
             // 自分のプレイヤーにアタッチされているBulletSpawnerコンポーネントを取得
             BulletSpawner spawner = PlayerMovement.Local.GetComponent<BulletSpawner>();
-            if (spawner != null)
+
+            // NetworkedBulletSpawnerがあればそちらを優先
+            NetworkedBulletSpawner networkedSpawner = PlayerMovement.Local.GetComponent<NetworkedBulletSpawner>();
+
+            if (networkedSpawner != null)
+            {
+                //銃弾の音を鳴らす
+                // NetworkedBulletSpawnerのFire()メソッドを呼び出す
+                networkedSpawner.Fire();
+                gunShotSoundSource.PlayOneShot(gunShotSoundClip);
+            }
+            else if (spawner != null)
             {
                 //銃弾の音を鳴らす
                 // そのFire()メソッドを呼び出す
                 spawner.Fire();
+                anim.SetTrigger("Fire");
                 gunShotSoundSource.PlayOneShot(gunShotSoundClip);
             }
         }
