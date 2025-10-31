@@ -54,23 +54,18 @@ public class Bullet : NetworkBehaviour
     /// <summary>
     /// 何かに衝突した時に呼ばれる
     /// </summary>
-    private void OnCollisionEnter(Collision collision)
-    {
-        // プレイヤーに衝突した場合はノックバック処理を実行
-        PlayerMovement player = collision.gameObject.GetComponent<PlayerMovement>();
-        if (player != null)
-        {
-            // 弾の移動方向を取得（ノックバック方向として使用）
-            Vector3 knockbackDirection = transform.up.normalized;
-            
-            // プレイヤーにノックバックを適用
-            player.ApplyKnockback(knockbackDirection);
-        }
+	private void OnCollisionEnter(Collision collision)
+	{
+		PlayerMovement player = collision.gameObject.GetComponent<PlayerMovement>();
+		if (player != null)
+		{
+			Vector3 knockbackDirection = transform.up.normalized;
 
-        // 衝突したら自身は消滅する
-        if (Object != null && Object.IsValid)
-        {
-            Runner.Despawn(Object);
-        }
-    }
+			// 弾のStateAuthority（撃った人）が「当たったPlayerのStateAuthority」に転送
+			player.RPC_ApplyKnockback(knockbackDirection);
+		}
+
+		if (Object != null && Object.IsValid)
+			Runner.Despawn(Object);
+	}
 }

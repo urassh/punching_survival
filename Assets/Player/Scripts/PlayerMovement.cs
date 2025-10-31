@@ -36,6 +36,14 @@ public class PlayerMovement : NetworkBehaviour
 
     public override void Spawned()
 	{
+		Debug.Log(
+			$"[{name}] Spawned | " +
+			$"StateAuthority={Object.StateAuthority}, " +
+			$"HasStateAuthority={HasStateAuthority}, " +
+			$"InputAuthority={Object.InputAuthority}, " +
+			$"HasInputAuthority={HasInputAuthority}, " +
+			$"IsMasterClient={Runner.IsSharedModeMasterClient}"
+		);
 		if (HasInputAuthority)
 		{
 			Local = this; // static変数に自分を登録
@@ -98,7 +106,14 @@ public class PlayerMovement : NetworkBehaviour
 	/// </summary>
 	public void ApplyKnockback(Vector3 knockbackDirection)
 	{
-		// ネットワークオブジェクトの場合、RPCを使用してノックバックを同期
+		Debug.Log(
+			$"[{name}] ApplyKnockback called | " +
+			$"StateAuthority={Object.StateAuthority}, " +
+			$"HasStateAuthority={HasStateAuthority}, " +
+			$"InputAuthority={Object.InputAuthority}, " +
+			$"HasInputAuthority={HasInputAuthority}, " +
+			$"IsMasterClient={Runner.IsSharedModeMasterClient}"
+		);
 		if (Object != null && Object.HasStateAuthority)
 		{
 			RPC_ApplyKnockback(knockbackDirection);
@@ -108,14 +123,14 @@ public class PlayerMovement : NetworkBehaviour
 	/// <summary>
 	/// ネットワーク同期されたノックバック処理
 	/// </summary>
-	[Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-	private void RPC_ApplyKnockback(Vector3 knockbackDirection)
+	[Rpc(RpcSources.All, RpcTargets.All)]
+	public void RPC_ApplyKnockback(Vector3 knockbackDirection)
 	{
+		Debug.Log("RPC_ApplyKnockback");
 		// 既にノックバック中の場合は処理しない
 		if (isKnockedBack) return;
 
 		isKnockedBack = true;
-
 		// ノックバック方向を水平面に制限（Y軸は0にする）
 		Vector3 horizontalKnockback = new Vector3(knockbackDirection.x, 0, knockbackDirection.z).normalized;
 
@@ -126,7 +141,9 @@ public class PlayerMovement : NetworkBehaviour
 		// DoTweenを使用してスムーズなノックバック移動
 		transform.DOMove(targetPosition, knockbackDuration)
 			.SetEase(Ease.OutCubic)
+			.SetUpdate(UpdateType.Fixed)
 			.OnComplete(() => {
+				Debug.Log("knockback completed!");
 				isKnockedBack = false;
 			});
 
