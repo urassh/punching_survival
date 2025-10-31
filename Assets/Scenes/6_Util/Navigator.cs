@@ -33,11 +33,12 @@ public struct SceneInfo
 
 public static class Scene
 {
-    public static readonly SceneInfo Start = new("Start", "Assets/Scenes/Start.unity");
-    public static readonly SceneInfo Lobby = new("Lobby", "Assets/Scenes/Lobby.unity");
-    public static readonly SceneInfo LobbyJoin = new("LobbyJoin", "Assets/Scenes/LobbyJoin.unity");
-    public static readonly SceneInfo Play = new("Play", "Assets/Scenes/Play.unity");
-    public static readonly SceneInfo Result = new("Result", "Assets/Scenes/Result.unity");
+    public static readonly SceneInfo Start = new("Start", "Assets/Scenes/1_Start/Start.unity");
+    public static readonly SceneInfo LobbyJoin = new("LobbyJoin", "Assets/Scenes/2_LobbyJoin/LobbyJoin.unity");
+    public static readonly SceneInfo Lobby = new("Lobby", "Assets/Scenes/3_Lobby/Lobby.unity");
+
+    public static readonly SceneInfo Play = new("Play", "Assets/Scenes/4_Play/Play.unity");
+    public static readonly SceneInfo Result = new("Result", "Assets/Scenes/5_Result/Result.unity");
 }
 
 
