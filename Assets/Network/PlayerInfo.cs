@@ -29,7 +29,7 @@ public class PlayerInfo : NetworkBehaviour
     private const int MAX_PLAYERS = 4;
     
     // プレイヤー削除完了のコールバック
-    public System.Action OnPlayerRemoved;
+    public Action OnPlayerRemoved;
 
     public override void Spawned()
     {   

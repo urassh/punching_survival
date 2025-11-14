@@ -9,7 +9,7 @@ using DG.Tweening;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerMovement : NetworkBehaviour
 {
-	// 自分自身（åローカルプレイヤー）のインスタンスを保持するstatic変数
+	// 自分自身（ローカルプレイヤー）のインスタンスを保持するstatic変数
     public static PlayerMovement Local { get; private set; }
     private Rigidbody _rb;
 
@@ -67,8 +67,9 @@ public class PlayerMovement : NetworkBehaviour
 			Camera.transform.LookAt(new Vector3(0, 0, 0));
 			GameObject.Find("UICanvas").SetActive(false);
 			string playerId = PlayerPrefs.GetString(PlayerId.playerIdKey);
-			Ranking ranking = FindObjectOfType<Ranking>();
-			ranking.RPC_SetDropPlayerRank(playerId);
+			Play play = FindObjectOfType<Play>();
+			play.OnDropPlayer(playerId);
+			return ;
 		}
 
 		// ノックバック中は通常の移動処理をスキップ

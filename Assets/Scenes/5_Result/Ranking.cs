@@ -29,7 +29,7 @@ public struct PlayerRankingData : INetworkStruct
 /// </summary>
 public class Ranking : NetworkBehaviour
 {
-    private Dictionary<string, PlayerRankingData> playerData = new Dictionary<string, PlayerRankingData>();
+    private readonly Dictionary<string, PlayerRankingData> playerData = new();
     public static Ranking Instance { get; private set; }
 
     public override void Spawned()
@@ -42,7 +42,10 @@ public class Ranking : NetworkBehaviour
         else
         {
             // 既にインスタンスが存在する場合は削除
-            Runner.Despawn(Object);
+            if (Runner.IsSharedModeMasterClient)
+            {
+                Runner.Despawn(Object);
+            }
         }
     }
     /// <summary>
@@ -81,6 +84,35 @@ public class Ranking : NetworkBehaviour
             player.Rank = GetSurvivingPlayersCount(); // 脱落ランクを設定
             playerData[playerId] = player;
         }
+    }
+
+    /// <summary>
+    /// 残ったプレイヤー数が1人の場合、そのプレイヤーを1位に設定（RPC版）
+    /// </summary>
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    private void RPC_SetLastPlayerAsFirstRank()
+    {
+        var survivingPlayers = playerData.Values.Where(p => p.Rank == 0).ToList();
+        if (survivingPlayers.Count == 1)
+        {
+            var lastPlayer = survivingPlayers[0];
+            lastPlayer.Rank = 1;
+            playerData[lastPlayer.PlayerId.ToString()] = lastPlayer;
+        }
+    }
+
+    /// <summary>
+    /// ランキングの集計が完了したかどうかを確認
+    /// </summary>
+    /// <returns>集計完了ならtrue、未完了ならfalse</returns>
+    public bool IsRankingComplete()
+    {
+        if (playerData.Count == 0) return false;
+
+        if (GetSurvivingPlayersCount() == 1)
+            RPC_SetLastPlayerAsFirstRank();
+
+        return playerData.Values.All(p => p.Rank > 0);
     }
 
     /// <summary>

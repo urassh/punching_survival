@@ -96,4 +96,28 @@ public class Play : MonoBehaviour
             runner.Spawn(playerPrefab, spawnPosition, spawnRotation, localPlayer);
         }
     }
+
+    public void OnDropPlayer(string playerId)
+    {
+        NetworkRunner runner = FindObjectOfType<NetworkRunner>();
+        if (runner != null && runner.IsSharedModeMasterClient)
+        {
+            Ranking ranking = FindObjectOfType<Ranking>();
+            if (ranking != null)
+            {
+                ranking.RPC_SetDropPlayerRank(playerId);
+            }
+
+            if (ranking.IsRankingComplete())
+            {
+                OnEndGame();
+            }
+        }
+    }
+
+    public void OnEndGame()
+    {
+        NetworkRunner runner = FindObjectOfType<NetworkRunner>();
+        Scene.Result.LoadScene(runner);
+    }
 }
