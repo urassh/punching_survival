@@ -46,7 +46,7 @@ public class Play : MonoBehaviour
 
 		SpawnAllPlayers(runner);
 
-        // 3秒間の猶予を持たせてからランキング登録処理を実行
+        // 5秒間の猶予を持たせてからランキング登録処理を実行
         Invoke(nameof(RegisterAllPlayersToRanking), 5.0f);
 	}
 
@@ -54,27 +54,24 @@ public class Play : MonoBehaviour
     private void RegisterAllPlayersToRanking()
     {
         NetworkRunner runner = FindObjectOfType<NetworkRunner>();
-        if (runner == null || !runner.IsSharedModeMasterClient) return;
-
+        if (runner == null || !runner.IsSharedModeMasterClient)
+            return ;
         PlayerInfo playerInfo = FindObjectOfType<PlayerInfo>();
         Ranking ranking = FindObjectOfType<Ranking>();
-
         // オブジェクトの存在確認とNetworkBehaviourの初期化確認
         if (playerInfo == null || ranking == null)
         {
             Debug.LogWarning("PlayerInfo or Ranking not found, retrying in 2 seconds...");
             Invoke(nameof(RegisterAllPlayersToRanking), 2.0f);
-            return;
+            return ;
         }
-
         // NetworkBehaviourが適切に初期化されているかチェック
         if (!ranking.Object.IsValid)
         {
             Debug.LogWarning("Ranking NetworkBehaviour not properly initialized, retrying in 2 seconds...");
             Invoke(nameof(RegisterAllPlayersToRanking), 2.0f);
-            return;
+            return ;
         }
-
         for (int i = 0; i < playerInfo.PlayerCount; i++)
         {
             ranking.RPC_RegisterPlayer(playerInfo.PlayerIds[i].ToString(), playerInfo.PlayerNames[i].ToString());
