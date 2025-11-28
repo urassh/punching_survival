@@ -39,14 +39,6 @@ public class Ranking : NetworkBehaviour
             Instance = this;
             DontDestroyOnLoad(this.gameObject);
         }
-        else
-        {
-            // 既にインスタンスが存在する場合は削除
-            if (Runner.IsSharedModeMasterClient)
-            {
-                Runner.Despawn(Object);
-            }
-        }
     }
     /// <summary>
     /// プレイヤーをランキングに登録（RPC版）
