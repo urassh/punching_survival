@@ -112,6 +112,7 @@ public class Play : MonoBehaviour
                 ranking.RPC_SetDropPlayerRank(playerId);
             }
 
+            Debug.Log("IsRankingComplete: " + (ranking != null ? ranking.IsRankingComplete().ToString() : "Ranking is null"));
             if (ranking.IsRankingComplete())
             {
                 RPC_OnEndGame();
