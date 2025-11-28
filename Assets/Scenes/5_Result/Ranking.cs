@@ -69,9 +69,10 @@ public class Ranking : NetworkBehaviour
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RPC_SetDropPlayerRank(string playerId)
     {
+        Debug.Log("RPC_SetDropPlayerRank called for playerId: " + playerId);
+
         if (playerData.ContainsKey(playerId))
         {
-			Debug.Log(playerId);
             var player = playerData[playerId];
             player.Rank = GetSurvivingPlayersCount(); // 脱落ランクを設定
             playerData[playerId] = player;

@@ -100,6 +100,10 @@ public class Play : MonoBehaviour
     public void OnDropPlayer(string playerId)
     {
         NetworkRunner runner = FindObjectOfType<NetworkRunner>();
+
+        Debug.Log("OnDropPlayer called for playerId: " + playerId);
+        Debug.Log("IsMasterClient: " + (runner != null ? runner.IsSharedModeMasterClient.ToString() : "Runner is null"));
+
         if (runner != null && runner.IsSharedModeMasterClient)
         {
             Ranking ranking = FindObjectOfType<Ranking>();
