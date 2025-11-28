@@ -23,6 +23,7 @@ public class PlayerMovement : NetworkBehaviour
 	[SerializeField] private float knockbackForce = 15f;
 	[SerializeField] private float knockbackDuration = 0.5f;
 	private bool isKnockedBack = false; 
+	private bool isDead = false;
 
     private void OnCollisionEnter(Collision collision)
 	{
@@ -58,6 +59,9 @@ public class PlayerMovement : NetworkBehaviour
 
 	public override void FixedUpdateNetwork()
 	{
+		if (isDead)
+			return ;
+
 		if (transform.position.y < -10)
 		{
 			Debug.Log("Died");
@@ -68,6 +72,7 @@ public class PlayerMovement : NetworkBehaviour
 			string playerId = PlayerPrefs.GetString(PlayerId.playerIdKey);
 			Play play = FindObjectOfType<Play>();
 			play.OnDropPlayer(playerId);
+			isDead = true;
 			return ;
 		}
 
