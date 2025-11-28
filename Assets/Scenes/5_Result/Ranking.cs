@@ -11,7 +11,7 @@ using UnityEngine;
 [System.Serializable]
 public struct PlayerRankingData : INetworkStruct
 {
-        [Networked] public NetworkString<_16> PlayerId { get; set; }
+        [Networked] public NetworkString<_64> PlayerId { get; set; }
         [Networked] public NetworkString<_64> PlayerName { get; set; }
         [Networked] public int Rank { get; set; }
 
