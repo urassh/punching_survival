@@ -113,6 +113,7 @@ public class Play : MonoBehaviour
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RPC_OnEndGame(Ranking ranking)
     {
+        Debug.Log("Checking if game has ended...");
         if (!ranking.IsRankingComplete())
             return ;
         Debug.Log("Game Ended. Loading Result Scene...");

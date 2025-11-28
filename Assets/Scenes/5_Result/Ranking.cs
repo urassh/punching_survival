@@ -70,10 +70,11 @@ public class Ranking : NetworkBehaviour
     public void RPC_SetDropPlayerRank(string playerId)
     {
         Debug.Log("RPC_SetDropPlayerRank called for playerId: " + playerId);
-
+        Debug.Log($"playerData contains keys: {string.Join(", ", playerData.Keys)}");
         if (playerData.ContainsKey(playerId))
         {
             var player = playerData[playerId];
+            Debug.Log($"Setting rank for player {player.PlayerName} (ID: {playerId})");
             player.Rank = GetSurvivingPlayersCount(); // 脱落ランクを設定
             playerData[playerId] = player;
         }
