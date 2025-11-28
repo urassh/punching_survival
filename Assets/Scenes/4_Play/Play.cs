@@ -100,29 +100,21 @@ public class Play : MonoBehaviour
     public void OnDropPlayer(string playerId)
     {
         NetworkRunner runner = FindObjectOfType<NetworkRunner>();
-
-        Debug.Log("OnDropPlayer called for playerId: " + playerId);
-        Debug.Log("IsMasterClient: " + (runner != null ? runner.IsSharedModeMasterClient.ToString() : "Runner is null"));
-
-        if (runner != null)
-        {
-            Ranking ranking = FindObjectOfType<Ranking>();
-            if (ranking != null)
-            {
-                ranking.RPC_SetDropPlayerRank(playerId);
-            }
-
-            Debug.Log("IsRankingComplete: " + (ranking != null ? ranking.IsRankingComplete().ToString() : "Ranking is null"));
-            if (ranking.IsRankingComplete())
-            {
-                RPC_OnEndGame();
-            }
-        }
+        if (runner == null)
+            return ;
+        Ranking ranking = FindObjectOfType<Ranking>();
+        if (ranking == null)
+            return ;
+        ranking.RPC_SetDropPlayerRank(playerId);
+        Debug.Log("Player Dropped: " + playerId);
+        RPC_OnEndGame(ranking);
     }
 
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void RPC_OnEndGame()
+    public void RPC_OnEndGame(Ranking ranking)
     {
+        if (!ranking.IsRankingComplete())
+            return ;
         Debug.Log("Game Ended. Loading Result Scene...");
         NetworkRunner runner = FindObjectOfType<NetworkRunner>();
         Scene.Result.LoadScene(runner);

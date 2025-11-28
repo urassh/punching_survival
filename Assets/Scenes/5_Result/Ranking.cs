@@ -29,7 +29,7 @@ public struct PlayerRankingData : INetworkStruct
 /// </summary>
 public class Ranking : NetworkBehaviour
 {
-    private readonly Dictionary<string, PlayerRankingData> playerData = new();
+    public readonly Dictionary<string, PlayerRankingData> playerData = new();
     public static Ranking Instance { get; private set; }
 
     public override void Spawned()
