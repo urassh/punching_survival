@@ -12,7 +12,7 @@ using UnityEngine;
 public struct PlayerRankingData : INetworkStruct
 {
         [Networked] public NetworkString<_16> PlayerId { get; set; }
-        [Networked] public NetworkString<_32> PlayerName { get; set; }
+        [Networked] public NetworkString<_64> PlayerName { get; set; }
         [Networked] public int Rank { get; set; }
 
         public PlayerRankingData(string id, string name)
