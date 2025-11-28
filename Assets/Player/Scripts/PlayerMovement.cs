@@ -71,7 +71,7 @@ public class PlayerMovement : NetworkBehaviour
 			GameObject.Find("UICanvas").SetActive(false);
 			string playerId = PlayerPrefs.GetString(PlayerId.playerIdKey);
 			Play play = FindObjectOfType<Play>();
-			play.OnDropPlayer(playerId);
+			play.OnDropMe(playerId);
 			isDead = true;
 			return ;
 		}

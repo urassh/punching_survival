@@ -58,6 +58,7 @@ public class Play : MonoBehaviour
             return ;
         PlayerInfo playerInfo = FindObjectOfType<PlayerInfo>();
         Ranking ranking = FindObjectOfType<Ranking>();
+
         // オブジェクトの存在確認とNetworkBehaviourの初期化確認
         if (playerInfo == null || ranking == null)
         {
@@ -76,6 +77,11 @@ public class Play : MonoBehaviour
             Debug.Log($"Registering Player: ID={playerInfo.PlayerIds[i]}, Name={playerInfo.PlayerNames[i]}");
             ranking.RegisterPlayer(playerInfo.PlayerIds[i].ToString(), playerInfo.PlayerNames[i].ToString());
         }
+        ranking.SetOnDroppedPlayerCallback(() =>
+        {
+            Debug.Log("A player has dropped. Checking for game end...");
+            RPC_OnEndGame(ranking);
+        });
     }
 	
     private void SpawnAllPlayers(NetworkRunner runner)
@@ -94,7 +100,7 @@ public class Play : MonoBehaviour
         }
     }
 
-    public void OnDropPlayer(string playerId)
+    public void OnDropMe(string playerId)
     {
         NetworkRunner runner = FindObjectOfType<NetworkRunner>();
         if (runner == null)

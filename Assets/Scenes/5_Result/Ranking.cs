@@ -31,6 +31,7 @@ public class Ranking : NetworkBehaviour
 {
     public readonly Dictionary<string, PlayerRankingData> playerData = new();
     public static Ranking Instance { get; private set; }
+    private Action onDroppedPlayer;
 
     public override void Spawned()
     {
@@ -47,24 +48,9 @@ public class Ranking : NetworkBehaviour
     /// <param name="playerName">プレイヤー名</param>
     public void RegisterPlayer(string playerId, string playerName)
     {
-        Debug.Log($"RegisterPlayer called - PlayerId: '{playerId}', PlayerName: '{playerName}'");
-        Debug.Log($"Current playerData count before registration: {playerData.Count}");
-        Debug.Log($"Current playerData keys: [{string.Join(", ", playerData.Keys)}]");
-        
-        if (!playerData.ContainsKey(playerId))
-        {
-            Debug.Log($"Player '{playerId}' not found in playerData. Registering new player.");
-            playerData[playerId] = new PlayerRankingData(playerId, playerName);
-            Debug.Log($"Successfully registered player '{playerName}' with ID '{playerId}'. New playerData count: {playerData.Count}");
-            Debug.Log($"Registered player data - ID: '{playerData[playerId].PlayerId}', Name: '{playerData[playerId].PlayerName}', Rank: {playerData[playerId].Rank}");
-        }
-        else
-        {
-            Debug.LogWarning($"Player '{playerId}' already exists in playerData. Registration skipped.");
-            Debug.Log($"Existing player data - Name: '{playerData[playerId].PlayerName}', Rank: {playerData[playerId].Rank}");
-        }
-        
-        Debug.Log($"RegisterPlayer completed. Final playerData count: {playerData.Count}");
+        if (playerData.ContainsKey(playerId))
+            return ;
+        playerData[playerId] = new PlayerRankingData(playerId, playerName);
     }
 
     /// <summary>
@@ -73,6 +59,11 @@ public class Ranking : NetworkBehaviour
     public int GetSurvivingPlayersCount()
     {
         return playerData.Values.Count(p => p.Rank == 0);
+    }
+
+    public void SetOnDroppedPlayerCallback(Action callback)
+    {
+        onDroppedPlayer = callback;
     }
 
     /// <summary>
@@ -90,6 +81,7 @@ public class Ranking : NetworkBehaviour
             Debug.Log($"Setting rank for player {player.PlayerName} (ID: {playerId})");
             player.Rank = GetSurvivingPlayersCount(); // 脱落ランクを設定
             playerData[playerId] = player;
+            onDroppedPlayer?.Invoke();
         }
     }
 
