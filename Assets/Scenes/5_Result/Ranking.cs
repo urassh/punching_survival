@@ -45,13 +45,26 @@ public class Ranking : NetworkBehaviour
     /// </summary>
     /// <param name="playerId">プレイヤーID</param>
     /// <param name="playerName">プレイヤー名</param>
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void RPC_RegisterPlayer(string playerId, string playerName)
+    public void RegisterPlayer(string playerId, string playerName)
     {
+        Debug.Log($"RegisterPlayer called - PlayerId: '{playerId}', PlayerName: '{playerName}'");
+        Debug.Log($"Current playerData count before registration: {playerData.Count}");
+        Debug.Log($"Current playerData keys: [{string.Join(", ", playerData.Keys)}]");
+        
         if (!playerData.ContainsKey(playerId))
         {
+            Debug.Log($"Player '{playerId}' not found in playerData. Registering new player.");
             playerData[playerId] = new PlayerRankingData(playerId, playerName);
+            Debug.Log($"Successfully registered player '{playerName}' with ID '{playerId}'. New playerData count: {playerData.Count}");
+            Debug.Log($"Registered player data - ID: '{playerData[playerId].PlayerId}', Name: '{playerData[playerId].PlayerName}', Rank: {playerData[playerId].Rank}");
         }
+        else
+        {
+            Debug.LogWarning($"Player '{playerId}' already exists in playerData. Registration skipped.");
+            Debug.Log($"Existing player data - Name: '{playerData[playerId].PlayerName}', Rank: {playerData[playerId].Rank}");
+        }
+        
+        Debug.Log($"RegisterPlayer completed. Final playerData count: {playerData.Count}");
     }
 
     /// <summary>

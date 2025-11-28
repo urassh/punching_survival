@@ -74,7 +74,7 @@ public class Play : MonoBehaviour
         for (int i = 0; i < playerInfo.PlayerCount; i++)
         {
             Debug.Log($"Registering Player: ID={playerInfo.PlayerIds[i]}, Name={playerInfo.PlayerNames[i]}");
-            ranking.RPC_RegisterPlayer(playerInfo.PlayerIds[i].ToString(), playerInfo.PlayerNames[i].ToString());
+            ranking.RegisterPlayer(playerInfo.PlayerIds[i].ToString(), playerInfo.PlayerNames[i].ToString());
         }
     }
 	
