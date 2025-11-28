@@ -104,7 +104,7 @@ public class Play : MonoBehaviour
         Debug.Log("OnDropPlayer called for playerId: " + playerId);
         Debug.Log("IsMasterClient: " + (runner != null ? runner.IsSharedModeMasterClient.ToString() : "Runner is null"));
 
-        if (runner != null && runner.IsSharedModeMasterClient)
+        if (runner != null)
         {
             Ranking ranking = FindObjectOfType<Ranking>();
             if (ranking != null)
