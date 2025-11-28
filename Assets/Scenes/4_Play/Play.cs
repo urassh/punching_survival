@@ -62,7 +62,6 @@ public class Play : MonoBehaviour
         if (playerInfo == null || ranking == null)
         {
             Debug.LogWarning("PlayerInfo or Ranking not found, retrying in 2 seconds...");
-            Invoke(nameof(RegisterAllPlayersToRanking), 2.0f);
             return ;
         }
         // NetworkBehaviourが適切に初期化されているかチェック
@@ -74,6 +73,7 @@ public class Play : MonoBehaviour
         }
         for (int i = 0; i < playerInfo.PlayerCount; i++)
         {
+            Debug.Log($"Registering Player: ID={playerInfo.PlayerIds[i]}, Name={playerInfo.PlayerNames[i]}");
             ranking.RPC_RegisterPlayer(playerInfo.PlayerIds[i].ToString(), playerInfo.PlayerNames[i].ToString());
         }
     }
