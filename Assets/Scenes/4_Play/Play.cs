@@ -110,13 +110,15 @@ public class Play : MonoBehaviour
 
             if (ranking.IsRankingComplete())
             {
-                OnEndGame();
+                RPC_OnEndGame();
             }
         }
     }
 
-    public void OnEndGame()
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void RPC_OnEndGame()
     {
+        Debug.Log("Game Ended. Loading Result Scene...");
         NetworkRunner runner = FindObjectOfType<NetworkRunner>();
         Scene.Result.LoadScene(runner);
     }
