@@ -74,8 +74,10 @@ public class Play : MonoBehaviour
         }
         for (int i = 0; i < playerInfo.PlayerCount; i++)
         {
-            Debug.Log($"Registering Player: ID={playerInfo.PlayerIds[i]}, Name={playerInfo.PlayerNames[i]}");
+            Debug.Log($"Registering Player: ID={playerInfo.PlayerIds[i].ToString()}, Name={playerInfo.PlayerNames[i].ToString()}");
             ranking.RegisterPlayer(playerInfo.PlayerIds[i].ToString(), playerInfo.PlayerNames[i].ToString());
+            Debug.Log("isCollectMeId: " + ranking.playerData.ContainsKey(playerInfo.PlayerIds[i].ToString()));
+            Debug.Log("MeId from PlayerPrefs: " + PlayerPrefs.GetString("playerId", ""));
         }
         ranking.SetOnDroppedPlayerCallback(() =>
         {

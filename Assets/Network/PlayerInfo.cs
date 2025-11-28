@@ -19,10 +19,10 @@ public class PlayerData
 public class PlayerInfo : NetworkBehaviour
 {
     [Networked, Capacity(4)] 
-    public NetworkArray<NetworkString<_32>> PlayerIds { get; }
+    public NetworkArray<NetworkString<_64>> PlayerIds { get; }
     
     [Networked, Capacity(4)] 
-    public NetworkArray<NetworkString<_32>> PlayerNames { get; }
+    public NetworkArray<NetworkString<_64>> PlayerNames { get; }
     
     [Networked] public int PlayerCount { get; set; }
     
