@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 using DG.Tweening;
 
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Animator))]
 public class PlayerMovement : NetworkBehaviour
 {
 	// 自分自身（ローカルプレイヤー）のインスタンスを保持するstatic変数
@@ -60,8 +61,6 @@ public class PlayerMovement : NetworkBehaviour
 		if (transform.position.y < -10)
 		{
 			Debug.Log("Died");
-			//Objectを消す
-			Runner.Despawn(Object);
 			//Playerカメラを特定の位置に切り替える
 			Camera.transform.position = new Vector3(0, 20, 0);
 			Camera.transform.LookAt(new Vector3(0, 0, 0));
