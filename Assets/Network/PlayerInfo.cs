@@ -19,17 +19,17 @@ public class PlayerData
 public class PlayerInfo : NetworkBehaviour
 {
     [Networked, Capacity(4)] 
-    public NetworkArray<NetworkString<_32>> PlayerIds { get; }
+    public NetworkArray<NetworkString<_64>> PlayerIds { get; }
     
     [Networked, Capacity(4)] 
-    public NetworkArray<NetworkString<_32>> PlayerNames { get; }
+    public NetworkArray<NetworkString<_64>> PlayerNames { get; }
     
     [Networked] public int PlayerCount { get; set; }
     
     private const int MAX_PLAYERS = 4;
     
     // プレイヤー削除完了のコールバック
-    public System.Action OnPlayerRemoved;
+    public Action OnPlayerRemoved;
 
     public override void Spawned()
     {   

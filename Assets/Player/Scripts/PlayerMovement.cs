@@ -7,9 +7,10 @@ using Unity.VisualScripting;
 using DG.Tweening;
 
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Animator))]
 public class PlayerMovement : NetworkBehaviour
 {
-	// 自分自身（åローカルプレイヤー）のインスタンスを保持するstatic変数
+	// 自分自身（ローカルプレイヤー）のインスタンスを保持するstatic変数
     public static PlayerMovement Local { get; private set; }
     private Rigidbody _rb;
 
@@ -22,6 +23,7 @@ public class PlayerMovement : NetworkBehaviour
 	[SerializeField] private float knockbackForce = 15f;
 	[SerializeField] private float knockbackDuration = 0.5f;
 	private bool isKnockedBack = false; 
+	private bool isDead = false;
 
     private void OnCollisionEnter(Collision collision)
 	{
@@ -65,18 +67,21 @@ public class PlayerMovement : NetworkBehaviour
 
 	public override void FixedUpdateNetwork()
 	{
+		if (isDead)
+			return ;
+
 		if (transform.position.y < -10)
 		{
 			Debug.Log("Died");
-			//Objectを消す
-			Runner.Despawn(Object);
 			//Playerカメラを特定の位置に切り替える
 			Camera.transform.position = new Vector3(0, 20, 0);
 			Camera.transform.LookAt(new Vector3(0, 0, 0));
 			GameObject.Find("UICanvas").SetActive(false);
 			string playerId = PlayerPrefs.GetString(PlayerId.playerIdKey);
-			Ranking ranking = FindObjectOfType<Ranking>();
-			ranking.RPC_SetDropPlayerRank(playerId);
+			Play play = FindObjectOfType<Play>();
+			play.OnDropMe(playerId);
+			isDead = true;
+			return ;
 		}
 
 		// ノックバック中は通常の移動処理をスキップ

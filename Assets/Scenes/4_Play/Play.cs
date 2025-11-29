@@ -46,7 +46,7 @@ public class Play : MonoBehaviour
 
 		SpawnAllPlayers(runner);
 
-        // 3秒間の猶予を持たせてからランキング登録処理を実行
+        // 5秒間の猶予を持たせてからランキング登録処理を実行
         Invoke(nameof(RegisterAllPlayersToRanking), 5.0f);
 	}
 
@@ -54,8 +54,8 @@ public class Play : MonoBehaviour
     private void RegisterAllPlayersToRanking()
     {
         NetworkRunner runner = FindObjectOfType<NetworkRunner>();
-        if (runner == null || !runner.IsSharedModeMasterClient) return;
-
+        if (runner == null || !runner.IsSharedModeMasterClient)
+            return ;
         PlayerInfo playerInfo = FindObjectOfType<PlayerInfo>();
         Ranking ranking = FindObjectOfType<Ranking>();
 
@@ -63,22 +63,27 @@ public class Play : MonoBehaviour
         if (playerInfo == null || ranking == null)
         {
             Debug.LogWarning("PlayerInfo or Ranking not found, retrying in 2 seconds...");
-            Invoke(nameof(RegisterAllPlayersToRanking), 2.0f);
-            return;
+            return ;
         }
-
         // NetworkBehaviourが適切に初期化されているかチェック
         if (!ranking.Object.IsValid)
         {
             Debug.LogWarning("Ranking NetworkBehaviour not properly initialized, retrying in 2 seconds...");
             Invoke(nameof(RegisterAllPlayersToRanking), 2.0f);
-            return;
+            return ;
         }
-
         for (int i = 0; i < playerInfo.PlayerCount; i++)
         {
-            ranking.RPC_RegisterPlayer(playerInfo.PlayerIds[i].ToString(), playerInfo.PlayerNames[i].ToString());
+            Debug.Log($"Registering Player: ID={playerInfo.PlayerIds[i].ToString()}, Name={playerInfo.PlayerNames[i].ToString()}");
+            ranking.RegisterPlayer(playerInfo.PlayerIds[i].ToString(), playerInfo.PlayerNames[i].ToString());
+            Debug.Log("isCollectMeId: " + ranking.playerData.ContainsKey(playerInfo.PlayerIds[i].ToString()));
+            Debug.Log("MeId from PlayerPrefs: " + PlayerPrefs.GetString("playerId", ""));
         }
+        ranking.SetOnDroppedPlayerCallback(() =>
+        {
+            Debug.Log("A player has dropped. Checking for game end...");
+            RPC_OnEndGame(ranking);
+        });
     }
 	
     private void SpawnAllPlayers(NetworkRunner runner)
@@ -95,5 +100,29 @@ public class Play : MonoBehaviour
 			Quaternion spawnRotation = Quaternion.LookRotation(Vector3.forward);
             runner.Spawn(playerPrefab, spawnPosition, spawnRotation, localPlayer);
         }
+    }
+
+    public void OnDropMe(string playerId)
+    {
+        NetworkRunner runner = FindObjectOfType<NetworkRunner>();
+        if (runner == null)
+            return ;
+        Ranking ranking = FindObjectOfType<Ranking>();
+        if (ranking == null)
+            return ;
+        ranking.RPC_SetDropPlayerRank(playerId);
+        Debug.Log("Player Dropped: " + playerId);
+        RPC_OnEndGame(ranking);
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void RPC_OnEndGame(Ranking ranking)
+    {
+        Debug.Log("Checking if game has ended...");
+        if (!ranking.IsRankingComplete())
+            return ;
+        Debug.Log("Game Ended. Loading Result Scene...");
+        NetworkRunner runner = FindObjectOfType<NetworkRunner>();
+        Scene.Result.LoadScene(runner);
     }
 }

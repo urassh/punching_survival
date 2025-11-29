@@ -11,8 +11,8 @@ using UnityEngine;
 [System.Serializable]
 public struct PlayerRankingData : INetworkStruct
 {
-        [Networked] public NetworkString<_16> PlayerId { get; set; }
-        [Networked] public NetworkString<_32> PlayerName { get; set; }
+        [Networked] public NetworkString<_64> PlayerId { get; set; }
+        [Networked] public NetworkString<_64> PlayerName { get; set; }
         [Networked] public int Rank { get; set; }
 
         public PlayerRankingData(string id, string name)
@@ -29,8 +29,9 @@ public struct PlayerRankingData : INetworkStruct
 /// </summary>
 public class Ranking : NetworkBehaviour
 {
-    private Dictionary<string, PlayerRankingData> playerData = new Dictionary<string, PlayerRankingData>();
+    public readonly Dictionary<string, PlayerRankingData> playerData = new();
     public static Ranking Instance { get; private set; }
+    private Action onDroppedPlayer;
 
     public override void Spawned()
     {
@@ -39,24 +40,17 @@ public class Ranking : NetworkBehaviour
             Instance = this;
             DontDestroyOnLoad(this.gameObject);
         }
-        else
-        {
-            // 既にインスタンスが存在する場合は削除
-            Runner.Despawn(Object);
-        }
     }
     /// <summary>
     /// プレイヤーをランキングに登録（RPC版）
     /// </summary>
     /// <param name="playerId">プレイヤーID</param>
     /// <param name="playerName">プレイヤー名</param>
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void RPC_RegisterPlayer(string playerId, string playerName)
+    public void RegisterPlayer(string playerId, string playerName)
     {
-        if (!playerData.ContainsKey(playerId))
-        {
-            playerData[playerId] = new PlayerRankingData(playerId, playerName);
-        }
+        if (playerData.ContainsKey(playerId))
+            return ;
+        playerData[playerId] = new PlayerRankingData(playerId, playerName);
     }
 
     /// <summary>
@@ -67,6 +61,11 @@ public class Ranking : NetworkBehaviour
         return playerData.Values.Count(p => p.Rank == 0);
     }
 
+    public void SetOnDroppedPlayerCallback(Action callback)
+    {
+        onDroppedPlayer = callback;
+    }
+
     /// <summary>
     /// プレイヤーを脱落ランクに設定（RPC版）
     /// </summary>
@@ -74,13 +73,45 @@ public class Ranking : NetworkBehaviour
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RPC_SetDropPlayerRank(string playerId)
     {
+        Debug.Log("RPC_SetDropPlayerRank called for playerId: " + playerId);
+        Debug.Log($"playerData contains keys: {string.Join(", ", playerData.Keys)}");
         if (playerData.ContainsKey(playerId))
         {
-			Debug.Log(playerId);
             var player = playerData[playerId];
+            Debug.Log($"Setting rank for player {player.PlayerName} (ID: {playerId})");
             player.Rank = GetSurvivingPlayersCount(); // 脱落ランクを設定
             playerData[playerId] = player;
+            onDroppedPlayer?.Invoke();
         }
+    }
+
+    /// <summary>
+    /// 残ったプレイヤー数が1人の場合、そのプレイヤーを1位に設定（RPC版）
+    /// </summary>
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    private void RPC_SetLastPlayerAsFirstRank()
+    {
+        var survivingPlayers = playerData.Values.Where(p => p.Rank == 0).ToList();
+        if (survivingPlayers.Count == 1)
+        {
+            var lastPlayer = survivingPlayers[0];
+            lastPlayer.Rank = 1;
+            playerData[lastPlayer.PlayerId.ToString()] = lastPlayer;
+        }
+    }
+
+    /// <summary>
+    /// ランキングの集計が完了したかどうかを確認
+    /// </summary>
+    /// <returns>集計完了ならtrue、未完了ならfalse</returns>
+    public bool IsRankingComplete()
+    {
+        if (playerData.Count == 0) return false;
+
+        if (GetSurvivingPlayersCount() == 1)
+            RPC_SetLastPlayerAsFirstRank();
+
+        return playerData.Values.All(p => p.Rank > 0);
     }
 
     /// <summary>
