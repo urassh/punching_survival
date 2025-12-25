@@ -929,6 +929,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7338401491540753124, guid: 805563ae751e34fd6a8609ac23b67bc7, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1484491898}
+    - targetCorrespondingSourceObject: {fileID: 7338401491540753124, guid: 805563ae751e34fd6a8609ac23b67bc7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1484491900}
+    - targetCorrespondingSourceObject: {fileID: 7338401491540753124, guid: 805563ae751e34fd6a8609ac23b67bc7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1484491901}
+    - targetCorrespondingSourceObject: {fileID: 7338401491540753124, guid: 805563ae751e34fd6a8609ac23b67bc7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1484491902}
   m_SourcePrefab: {fileID: 100100000, guid: 805563ae751e34fd6a8609ac23b67bc7, type: 3}
 --- !u!1 &1484491897 stripped
 GameObject:
@@ -957,6 +966,58 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4547268506808534155, guid: 805563ae751e34fd6a8609ac23b67bc7, type: 3}
+--- !u!114 &1484491900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1484491897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01bb1286c3ccd034cab981645fab8534, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  smallingStartDelay: 5
+  smallingDuration: 180
+  finalScaleRatio: 0.25
+--- !u!114 &1484491901
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1484491897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SortKey: 1572446549
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 1484491900}
+  - {fileID: 1484491902}
+  ForceRemoteRenderTimeframe: 0
+--- !u!114 &1484491902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1484491897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stateAuthorityChangeErrorCorrectionDelta: 0
+  SyncScale: 1
+  SyncParent: 0
+  _autoAOIOverride: 1
+  DisableSharedModeInterpolation: 0
 --- !u!1 &1524872122
 GameObject:
   m_ObjectHideFlags: 0
